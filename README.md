@@ -17,7 +17,7 @@ req
 {
   "username": "username",
   "email": "hoge@example.com",
-  "hashedPass": "hashedPass",
+  "hashedPassword": "hashedPass",
 }
 ```
 res（201）
@@ -36,7 +36,7 @@ req
 ```
 {
   "email": "hoge@example.com",
-  "hashedPass": "hashedPass",
+  "hashedPassword": "hashedPass",
 }
 ```
 res（200）

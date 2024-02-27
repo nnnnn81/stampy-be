@@ -47,7 +47,7 @@ res（200）
 ```
 
 ## これ以下はすべてtoken必要
-### GET  /user/:id
+### GET  /user
 ユーザー情報取得
 
 req
@@ -63,7 +63,7 @@ res（200）
   "avatarUrl": "",
 }
 ```
-### PUT  /user/:id
+### PUT  /user
 ユーザー情報の更新(パスワード以外)  
 req
 ```
@@ -78,7 +78,7 @@ res（204）
 なし
 ```
 
-### PUT  /user/:id/pwd
+### PUT  /user/pwd
 ユーザー情報の更新  
 req
 ```
@@ -110,11 +110,13 @@ res（201）
 {
     title: `title`,
     createdBy: {
+      "id": "0",
       username: "username",
       email: "createUser@gmail.com",
       avatarUrl: "",
     },
     joinedUser: {
+      "id": "1",
       username: "username",
       email: "joinedUser@gmail.com",
       avatarUrl: "",
@@ -144,11 +146,13 @@ res（200）
       "id": "",
       "title": `title`,
       "createdBy": {
+        "id": "0",
         "username": "username",
         "email": "createUser@gmail.com",
         "avatarUrl": "",
       },
       "joinedUser": {
+        "id": "1",
         "username": "username",
         "email": "joinedUser@gmail.com",
         "avatarUrl": "",
@@ -200,11 +204,13 @@ res（200）
       "id": "",
       "title": `title`,
       "createdBy": {
+        "id": "0",
         "username": "username",
         "email": "createUser@gmail.com",
         "avatarUrl": "",
       },
       "joinedUser": {
+        "id": "1",
         "username": "username",
         "email": "joinedUser@gmail.com",
         "avatarUrl": "",
@@ -227,12 +233,9 @@ res（200）
 req
 ```
 {
-  "id": "",
   "title": `title`,
   "currentDay": 0,
-  "isCompleted": 0,
-  "isDeleted": false,
-  "stampNodes": [],
+  "isCompleted": false,
   "backgroundUrl": "https://source.unsplash.com/ZkOt0N7rP4s",
 }
 ```
@@ -250,11 +253,7 @@ req
   "stamp": "🌟",
   "message": "おめでとう！",
   "nthDay": 1,
-  "stampedBy": {
-    "username": "山田太郎",
-    "email": "email.com",
-    "avatarUrl": "",
-  },
+  "stampedByUserId": "1", // stampを押したユーザーのid
   "x": 0,
   "y": 0,
   "cardId": "",
@@ -264,10 +263,12 @@ req
 res（201）
 ```
 {
+  "stampId": "",
   "stamp": "🌟",
   "message": "おめでとう！",
   "nthDay": 1,
   "stampedBy": {
+    "id": "1",
     "username": "山田太郎",
     "email": "email.com",
     "avatarUrl": "",
@@ -279,7 +280,7 @@ res（201）
 ```
 
 ### POST  /notice
-通知/レターの作成
+レターの作成
 
 req
 ```
@@ -288,11 +289,9 @@ req
   title: "",
   stamp: "🌟",
   content: "",
-  hrefPrefix: "",
-  read: true,
-  createdAt: "createdAt",
-  sendAt: "sendAt",
-  listType: "text",
+  hrefPrefix: "", // フロントで管理？
+  sendAt: "sendAt", // 用途がわからない
+  listType: "text",　// フロントで管理？
 }
 ```
 

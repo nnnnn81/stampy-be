@@ -7,12 +7,9 @@
 
 - notice
 
-## エンドポイント(フロントから叩く)
+## API
 
-### /signup
-
-`/signup`  
-POST  
+### POST  /signup
 新規ユーザー作成
 
 req
@@ -32,11 +29,8 @@ res（201）
 }
 ```
 
-### /login
-`/login`  
-POST  
+### POST  /login
 ログイン
-
 
 req
 ```
@@ -53,9 +47,7 @@ res（200）
 ```
 
 ## これ以下はすべてtoken必要
-### /user
-`/user`  
-GET  
+### GET  /user/:id
 ユーザー情報取得
 
 req
@@ -71,8 +63,7 @@ res（200）
   "avatarUrl": "",
 }
 ```
-`/user`  
-PUT  
+### PUT  /user/:id
 ユーザー情報の更新(パスワード以外)  
 req
 ```
@@ -87,8 +78,7 @@ res（204）
 なし
 ```
 
-`/user/pwd`  
-PUT  
+### PUT  /user/:id/pwd
 ユーザー情報の更新  
 req
 ```
@@ -102,9 +92,7 @@ res（204）
 なし
 ```
 
-### /stampcard
-`/stampcard`  
-POST  
+### POST  /stampcard
 スタンプカードの作成
 
 req
@@ -140,8 +128,7 @@ res（201）
     backgroundUrl: "https://source.unsplash.com/ZkOt0N7rP4s",
 }
 ```
-`/stampcards`  
-GET  
+### GET  /stampcard
 スタンプカード取得
 
 req
@@ -234,8 +221,7 @@ res（200）
 }
 ```
 
-`/stampcard/:id`  
-PUT  
+### PUT  /stampcard/:id
 スタンプカードの更新
 
 req
@@ -255,9 +241,7 @@ res（204）
 ```
 なし
 ```
-### /stamp
-`/stamp`  
-POST  
+### POST  /stamp
 スタンプの作成（取得はスタンプカードと同時に、更新、削除処理はなし）
 
 req
@@ -294,9 +278,7 @@ res（201）
 }
 ```
 
-### /notice
-`/notice`  
-POST  
+### POST  /notice
 通知/レターの作成
 
 req
@@ -341,9 +323,8 @@ res（201）
   listType: "text",
 }
 ```
-- `/notice`  
-GET  
-通知/レターの取得
+### GET  /notice
+通知/レターの一覧取得
 
 req
 ```
@@ -416,6 +397,6 @@ res（200）
 
 ### /auth
 - `/auth`  
-認証用, emailとpasswordを受け取ってjwtを返す
+認証用, emailとpasswordを受け取ってjwtを返す、jwtにuseridを含める
 
 ## その他

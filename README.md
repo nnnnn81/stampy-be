@@ -294,7 +294,7 @@ res（201）
 }
 ```
 
-### /letter
+### /notice
 `/notice`  
 POST  
 通知/レターの作成

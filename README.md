@@ -101,6 +101,9 @@ req
     "title": "title",
     "createdBy": "createUser@gmail.com",
     "joinedUser": "joinedUser@gmail.com",
+    "startDate": "2024-02-22 00:00:00",
+    "endDate": "2024-02-22 00:00:00",
+    "isStampy": false,
     "backgroundUrl": "",
 }
 ```
@@ -253,9 +256,6 @@ req
   "stamp": "🌟",
   "message": "おめでとう！",
   "nthDay": 1,
-  "stampedByUserId": "1", // stampを押したユーザーのid
-  "x": 0,
-  "y": 0,
   "cardId": "",
 }
 ```
@@ -273,8 +273,6 @@ res（201）
     "email": "email.com",
     "avatarUrl": "",
   },
-  "x": 0,
-  "y": 0,
   "cardId": "",
 }
 ```
@@ -289,9 +287,6 @@ req
   title: "",
   stamp: "🌟",
   content: "",
-  hrefPrefix: "", // フロントで管理？
-  sendAt: "sendAt", // 用途がわからない
-  listType: "text",　// フロントで管理？
 }
 ```
 
@@ -303,7 +298,7 @@ res（201）
   title: "",
   stamp: "🌟",
   content: "",
-  hrefPrefix: "/letter",
+  hrefPrefix: "", // letterのとき"/letter"になってほしい、みたいなはなし
   sender: {
     id: "1",
     username: "username",
@@ -318,8 +313,7 @@ res（201）
   },
   read: true,
   createdAt: "createdAt",
-  sendAt: "sendAt",
-  listType: "text",
+  listType: "text",　// 4つある、用途としては通知のメタ情報（押したらダイアログがでるとか、ただのテキストとか）
 }
 ```
 ### GET  /notice

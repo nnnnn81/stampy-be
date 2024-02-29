@@ -179,8 +179,6 @@ res（200）
             "email": "email.com",
             "avatarUrl": "",
           },
-          "x": 0,
-          "y": 0,
           "cardId": "",
         },
         {
@@ -196,8 +194,6 @@ res（200）
             "email": "email.com",
             "avatarUrl": "",
           },
-          "x": 0,
-          "y": 0,
           "cardId": "",
         }
       ],

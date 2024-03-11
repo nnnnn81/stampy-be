@@ -13,6 +13,5 @@ type Notice struct {
 	Receiver   User
 	Read       bool
 	CreatedAt  time.Time
-	SendAt     string
 	ListType   string
 }

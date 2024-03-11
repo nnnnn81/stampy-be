@@ -20,8 +20,20 @@ func newRouter() *echo.Echo {
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")
 	})
-	// e.POST("user", controller.Create())
-	// e.GET("user/:id", controller.UserShow())
-	// e.PUT("user/:id", controller.Update())
+	// e.POST("signup", controller.Signup())
+	// e.POST("login", controller.Login())
+
+	// r := e.Group("/auth")
+	// r.GET("", handler.Auth)
+	// r.GET("user", controller.UserShow())
+	// r.PUT("user", controller.UserUpdate())
+	// r.PUT("user/pwd", controller.UserPassUpdate())
+	// r.GET("stampcard", controller.CardShow())
+	// r.POST("stampcard", controller.CardCreate())
+	// r.PUT("stampcard/:id", controller.CardUpdate())
+	// r.POST("stamp", controller.StampCreate())
+	// r.GET("notice", controller.NoticeShow())
+	// r.POST("notice", controller.NoticeCreate())
+
 	return e
 }

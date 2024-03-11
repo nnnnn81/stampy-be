@@ -3,8 +3,8 @@ package model
 import "time"
 
 type Stampcard struct {
-	Id            int       `gorm: "primary_key" json:"id"`
-	Title         string    `gorm: "not null" json:"title"`
+	Id            int       `gorm:"primary_key" json:"id"`
+	Title         string    `gorm:"not null" json:"title"`
 	CreatedBy     User      `json:"CreatedBy"`
 	JoinedUser    User      `json:"JoinedUser"`
 	Created_at    time.Time `json:"createdAt"`

@@ -2,8 +2,10 @@ package db
 
 import (
 	"log"
+	"os"
 
 	"github.com/nnnnn81/stampy-be/model"
+	"github.com/nnnnn81/stampy-be/util"
 )
 
 func Migrate() {
@@ -18,5 +20,14 @@ func Migrate() {
 	DB.AutoMigrate(&model.User{})
 	DB.AutoMigrate(&model.Stampcard{})
 
+	// test user 作成
+	hashedPass, _ := util.HashPassword(os.Getenv("TESTUSER_PASSWORD"))
+	user := model.User{
+		Username:       "user",
+		Email:          "user@teamb.com",
+		HashedPassword: hashedPass,
+		AvaterUrl:      "https://hogheoge.com",
+	}
+	DB.Create(&user)
 	log.Print("[INFO] DB Migrated!")
 }

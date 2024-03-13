@@ -3,15 +3,15 @@ package model
 import "time"
 
 type Stampcard struct {
-	Id            int       `gorm:"primary_key" json:"id"`
+	Id            uint      `gorm:"primary_key" json:"id"`
 	Title         string    `gorm:"not null" json:"title"`
-	CreatedBy     User      `json:"CreatedBy"`
-	JoinedUser    User      `json:"JoinedUser"`
+	CreatedBy     uint      `json:"CreatedBy"`
+	JoinedUser    string    `json:"JoinedUser"`
 	Created_at    time.Time `json:"createdAt"`
 	Updated_at    time.Time `json:"updatedAt"`
 	CurrentDay    int       `json:"CurrentDay"`
+	IsStampy      bool      `json:"isStampy"`
 	IsCompleted   bool      `json:"IsCompleted"`
 	IsDeleted     bool      `json:"IsDeleted"`
-	StampNodes    []Stamp   `json:"stampNodes"`
 	BackgroundUrl string    `json:"BackgroundUrl"`
 }

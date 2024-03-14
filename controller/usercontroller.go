@@ -157,10 +157,13 @@ func UserShow(c echo.Context) error {
 		}
 
 	} else {
+		var omituser model.OmitUser
+		omituser.Id = user_.Id
+		omituser.Email = user_.Email
+		omituser.Username = user_.Username
+		omituser.AvaterUrl = user_.AvaterUrl
 		// return 200
-		return c.JSON(http.StatusCreated, echo.Map{
-			"user": user_,
-		})
+		return c.JSON(http.StatusCreated, omituser)
 
 	}
 }

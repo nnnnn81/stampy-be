@@ -62,6 +62,16 @@ func CardShow(c echo.Context) error {
 					})
 				}
 			}
+			var omitedcreateduser model.OmitUser
+			omitedcreateduser.Id = createduser.Id
+			omitedcreateduser.Email = createduser.Email
+			omitedcreateduser.Username = createduser.Username
+			omitedcreateduser.AvaterUrl = createduser.AvaterUrl
+			var omitedjoineduser model.OmitUser
+			omitedjoineduser.Id = joineduser.Id
+			omitedjoineduser.Email = joineduser.Email
+			omitedjoineduser.Username = joineduser.Username
+			omitedjoineduser.AvaterUrl = joineduser.AvaterUrl
 
 			// スタンプの配列取得
 			var stampNodes []model.Stamp
@@ -78,8 +88,8 @@ func CardShow(c echo.Context) error {
 
 			responseData = append(responseData, echo.Map{
 				"title":         card.Title,
-				"createdBy":     createduser,
-				"joinedUser":    joineduser,
+				"createdBy":     omitedcreateduser,
+				"joinedUser":    omitedjoineduser,
 				"createdAt":     card.CreatedAt,
 				"updatedAt":     card.UpdatedAt,
 				"currentDay":    card.CurrentDay,

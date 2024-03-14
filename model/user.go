@@ -11,3 +11,10 @@ type User struct {
 	CreatedAt      time.Time `json:"createdAt"`
 	UpdatedAt      time.Time `json:"updatedAt"`
 }
+
+type OmitUser struct {
+	Id        uint   `json:"id"`
+	Username  string `json:"username"`
+	Email     string `json:"email"`
+	AvaterUrl string `json:"avaterUrl"`
+}

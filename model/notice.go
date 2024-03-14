@@ -9,8 +9,8 @@ type Notice struct {
 	Stamp      string
 	Content    string
 	HrefPrefix string
-	Sender     string
-	Receiver   string
+	Sender     uint
+	Receiver   uint
 	Read       bool
 	CreatedAt  time.Time
 	ListType   string

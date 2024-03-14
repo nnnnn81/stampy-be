@@ -3,7 +3,7 @@ package controller
 import (
 	"net/http"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/nnnnn81/stampy-be/db"
 	"github.com/nnnnn81/stampy-be/model"

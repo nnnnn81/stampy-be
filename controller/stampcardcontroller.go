@@ -3,7 +3,7 @@ package controller
 import (
 	"net/http"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/nnnnn81/stampy-be/db"
 	"github.com/nnnnn81/stampy-be/model"
@@ -15,45 +15,84 @@ func CardShow(c echo.Context) error {
 	claims := user.Claims.(jwt.MapClaims)
 	useridFloat := claims["id"].(float64)
 	userid := uint(useridFloat)
-	cardid := c.Param("id")
-	var card model.Stampcard
-	if err := db.DB.Where("created_by = ?", userid).First(&card).Error; err != nil {
-
+	var cards []model.Stampcard
+	if err := db.DB.Where("created_by = ?", userid).Find(&cards).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			// return 404
-			return c.JSON(http.StatusNotFound, echo.Map{
-				"message": "User Not Found",
+			return c.JSON(http.StatusOK, echo.Map{
+				"cards": []model.Stampcard{},
 			})
-
 		} else {
-			// return 500
 			return c.JSON(http.StatusInternalServerError, echo.Map{
 				"message": "Database Error: " + err.Error(),
 			})
 		}
-
 	} else {
-		if err := db.DB.Where("id = ?", cardid).First(&card).Error; err != nil {
+		var responseData []echo.Map
+		for _, card := range cards {
+			// createdUser取得
+			var createduser model.User
+			if err := db.DB.Where("id = ?", card.CreatedBy).First(&createduser).Error; err != nil {
+				if err == gorm.ErrRecordNotFound {
+					// return 404
+					return c.JSON(http.StatusNotFound, echo.Map{
+						"message": "User Not Found",
+					})
 
-			if err == gorm.ErrRecordNotFound {
-				// return 404
-				return c.JSON(http.StatusNotFound, echo.Map{
-					"message": "Card Not Found",
-				})
-
-			} else {
-				// return 500
-				return c.JSON(http.StatusInternalServerError, echo.Map{
-					"message": "Database Error: " + err.Error(),
-				})
+				} else {
+					// return 500
+					return c.JSON(http.StatusInternalServerError, echo.Map{
+						"message": "Database Error: " + err.Error(),
+					})
+				}
 			}
 
-		} else {
-			// return 200
-			return c.JSON(http.StatusCreated, echo.Map{
-				"stampcard": card,
+			// joinedUser取得
+			var joineduser model.User
+			if err := db.DB.Where("email = ?", card.JoinedUser).First(&joineduser).Error; err != nil {
+				if err == gorm.ErrRecordNotFound {
+					// return 404
+					return c.JSON(http.StatusNotFound, echo.Map{
+						"message": "User Not Found",
+					})
+
+				} else {
+					// return 500
+					return c.JSON(http.StatusInternalServerError, echo.Map{
+						"message": "Database Error: " + err.Error(),
+					})
+				}
+			}
+
+			// スタンプの配列取得
+			var stampNodes []model.Stamp
+			if err := db.DB.Where("card_id = ?", card.Id).Find(&stampNodes).Error; err != nil {
+				if err == gorm.ErrRecordNotFound {
+					stampNodes = []model.Stamp{}
+				} else {
+					// return 500
+					return c.JSON(http.StatusInternalServerError, echo.Map{
+						"message": "Database Error: " + err.Error(),
+					})
+				}
+			}
+
+			responseData = append(responseData, echo.Map{
+				"title":         card.Title,
+				"createdBy":     createduser,
+				"joinedUser":    joineduser,
+				"createdAt":     card.CreatedAt,
+				"updatedAt":     card.UpdatedAt,
+				"currentDay":    card.CurrentDay,
+				"isCompleted":   card.IsCompleted,
+				"isDeleted":     card.IsDeleted,
+				"stampNodes":    stampNodes,
+				"backgroundUrl": card.BackgroundUrl,
 			})
 		}
+
+		return c.JSON(http.StatusOK, echo.Map{
+			"cards": responseData,
+		})
 	}
 }
 
@@ -61,6 +100,8 @@ func CardCreate(c echo.Context) error {
 	type Body struct {
 		Title         string `json:"title"`
 		JoinedUser    string `json:"JoinedUser"`
+		StartDate     string `json:"startDate"`
+		EndDate       string `json:"endDate"`
 		CurrentDay    int    `json:"CurrentDay"`
 		IsStampy      bool   `json:"IsStampy"`
 		IsCompleted   bool   `json:"IsCompleted"`
@@ -86,6 +127,8 @@ func CardCreate(c echo.Context) error {
 		Title:         obj.Title,
 		CreatedBy:     userid,
 		JoinedUser:    obj.JoinedUser,
+		StartDate:     obj.StartDate,
+		EndDate:       obj.EndDate,
 		CurrentDay:    obj.CurrentDay,
 		IsStampy:      obj.IsStampy,
 		IsCompleted:   obj.IsCompleted,
@@ -99,6 +142,8 @@ func CardCreate(c echo.Context) error {
 		"title":         new.Title,
 		"CreatedBy":     new.CreatedBy,
 		"JoinedUser":    new.JoinedUser,
+		"startDate":     new.StartDate,
+		"endDate":       new.EndDate,
 		"CurrentDay":    new.CurrentDay,
 		"IsStampy":      new.IsStampy,
 		"IsCompleted":   new.IsCompleted,
@@ -165,7 +210,7 @@ func StampCreate(c echo.Context) error {
 		StampImg string `json:"stamp"`
 		Message  string `json:"title"`
 		Nthday   int    `json:"nthday"`
-		Card     uint   `json:"cardId"`
+		CardId   uint   `json:"cardId"`
 	}
 
 	user := c.Get("user").(*jwt.Token)
@@ -185,7 +230,7 @@ func StampCreate(c echo.Context) error {
 		Message:   obj.Message,
 		Nthday:    obj.Nthday,
 		StampedBy: userid,
-		Card:      obj.Card,
+		CardId:    obj.CardId,
 	}
 	db.DB.Create(&new)
 
@@ -195,7 +240,7 @@ func StampCreate(c echo.Context) error {
 		"message":   new.Message,
 		"nthday":    new.Nthday,
 		"stampedBy": new.StampedBy,
-		"cardId":    new.Card,
+		"cardId":    new.CardId,
 		"createdAt": new.CreatedAt,
 	})
 

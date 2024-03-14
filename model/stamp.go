@@ -1,6 +1,8 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 type Stamp struct {
 	Id        uint      `gorm:"primary_key" json:"id"`
@@ -8,6 +10,6 @@ type Stamp struct {
 	Message   string    `json:"message"`
 	Nthday    int       `json:"nthday"`
 	StampedBy uint      `json:"stampedBy"`
-	Card      uint      `json:"cardId"`
+	CardId    uint      `json:"cardId"`
 	CreatedAt time.Time `json:"createdAt"`
 }

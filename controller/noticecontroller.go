@@ -2,7 +2,6 @@ package controller
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
@@ -53,7 +52,7 @@ func NoticeShow(c echo.Context) error {
 
 			// joinedUser取得
 			var receiver model.User
-			if err := db.DB.Where("email = ?", notice.Receiver).First(&receiver).Error; err != nil {
+			if err := db.DB.Where("id = ?", notice.Receiver).First(&receiver).Error; err != nil {
 				if err == gorm.ErrRecordNotFound {
 					// return 404
 					return c.JSON(http.StatusNotFound, echo.Map{
@@ -99,52 +98,15 @@ func NoticeShow(c echo.Context) error {
 	}
 }
 
-// レター作成
-func LetterCreate(c echo.Context) error {
-	type Body struct {
-		Title    string
-		Stamp    string
-		Content  string
-		Receiver uint
-	}
-
-	user := c.Get("user").(*jwt.Token)
-	claims := user.Claims.(jwt.MapClaims)
-	useridFloat := claims["id"].(float64)
-	userid := uint(useridFloat)
-
-	obj := new(Body)
-	if err := c.Bind(obj); err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{
-			"message": "Json Format Error: " + err.Error(),
-		})
-	}
-
-	new := model.Notice{
-		Type:       "letter",
-		Title:      obj.Title,
-		Stamp:      obj.Stamp,
-		Content:    obj.Content,
-		HrefPrefix: "/letter",
-		Sender:     userid,
-		Receiver:   obj.Receiver,
-		ListType:   "link",
-	}
-	db.DB.Create(&new)
-	return c.JSON(http.StatusCreated, echo.Map{
-		"notice": new,
-	})
-}
-
-// notice(sender-dialog,receiver-dialog,text)作成
+// notice作成
 func NoticeCreate(c echo.Context) error {
 	type Body struct {
+		Type       string
 		Title      string
 		Content    string
 		Stamp      string
 		HrefPrefix string
 		Receiver   uint
-		CreatedAt  time.Time
 		ListType   string
 	}
 
@@ -161,7 +123,7 @@ func NoticeCreate(c echo.Context) error {
 	}
 
 	new := model.Notice{
-		Type:       "notification",
+		Type:       obj.Type,
 		Title:      obj.Title,
 		Stamp:      obj.Stamp,
 		Content:    obj.Content,

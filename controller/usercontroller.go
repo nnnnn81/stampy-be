@@ -53,7 +53,7 @@ func Signup(c echo.Context) error {
 
 			// ペイロード作成
 			claims := jwt.MapClaims{
-				"id":  user.Id,
+				"id":  new.Id,
 				"exp": time.Now().Add(time.Hour * 24).Unix(),
 			}
 			token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

@@ -274,7 +274,7 @@ res（201）
 ```
 
 ### POST  /notice
-レターの作成
+レター/通知の作成
 
 req
 ```
@@ -283,6 +283,9 @@ req
   title: "",
   stamp: "🌟",
   content: "",
+  hrefPrefix: "/letter".
+  receiver: 1 ## receiverのuserid
+  listType: "link"
 }
 ```
 
@@ -294,22 +297,12 @@ res（201）
   title: "",
   stamp: "🌟",
   content: "",
-  hrefPrefix: "", // letterのとき"/letter"になってほしい、みたいなはなし
-  sender: {
-    id: "1",
-    username: "username",
-    email: "email",
-    avatarUrl: "",
-  },
-  receiver: {
-    id: "1",
-    username: "username",
-    email: "email",
-    avatarUrl: "",
-  },
-  read: true,
-  createdAt: "createdAt",
-  listType: "text",　// 4つある、用途としては通知のメタ情報（押したらダイアログがでるとか、ただのテキストとか）
+  hrefPrefix: "/letter", // letterのとき"/letter"になってほしい、みたいなはなし
+  sender: 2,
+  receiver: 1,
+  read: false,
+  createdAt: "2024-02-22 00:00:00",
+  listType: "link",
 }
 ```
 ### GET  /notice
@@ -345,7 +338,6 @@ res（200）
       },
       read: true,
       createdAt: "createdAt",
-      sendAt: "sendAt",
       listType: "text",
     },
     {
@@ -369,7 +361,6 @@ res（200）
       },
       read: true,
       createdAt: "createdAt",
-      sendAt: "sendAt",
       listType: "text",
     }
   ]

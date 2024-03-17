@@ -136,15 +136,14 @@ func LetterCreate(c echo.Context) error {
 	})
 }
 
-// sender-dialog作成
-func SenderNoticeCreate(c echo.Context) error {
+// notice(sender-dialog,receiver-dialog,text)作成
+func NoticeCreate(c echo.Context) error {
 	type Body struct {
 		Title      string
 		Content    string
+		Stamp      string
 		HrefPrefix string
-		Sender     uint
 		Receiver   uint
-		Read       bool
 		CreatedAt  time.Time
 		ListType   string
 	}
@@ -164,49 +163,12 @@ func SenderNoticeCreate(c echo.Context) error {
 	new := model.Notice{
 		Type:       "notification",
 		Title:      obj.Title,
-		Stamp:      "stamp",
-		Content:    obj.Content,
-		HrefPrefix: "hrefPrefix",
-		Sender:     userid,
-		Receiver:   obj.Receiver,
-		ListType:   "sender-dialog",
-	}
-	db.DB.Create(&new)
-	return c.JSON(http.StatusCreated, echo.Map{
-		"notice": new,
-	})
-}
-
-// receiver-dialog作成
-func ReceiverNoticeCreate(c echo.Context) error {
-	type Body struct {
-		Title    string
-		Stamp    string
-		Content  string
-		Receiver uint
-	}
-
-	user := c.Get("user").(*jwt.Token)
-	claims := user.Claims.(jwt.MapClaims)
-	useridFloat := claims["id"].(float64)
-	userid := uint(useridFloat)
-
-	obj := new(Body)
-	if err := c.Bind(obj); err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{
-			"message": "Json Format Error: " + err.Error(),
-		})
-	}
-
-	new := model.Notice{
-		Type:       "notification",
-		Title:      obj.Title,
 		Stamp:      obj.Stamp,
 		Content:    obj.Content,
-		HrefPrefix: "hrefPrefix",
+		HrefPrefix: obj.HrefPrefix,
 		Sender:     userid,
 		Receiver:   obj.Receiver,
-		ListType:   "receiver-dialog",
+		ListType:   obj.ListType,
 	}
 	db.DB.Create(&new)
 	return c.JSON(http.StatusCreated, echo.Map{

@@ -23,8 +23,6 @@ req
 res（201）
 ```
 {
-  "username": "",
-  "email": "",
   "token": "",
 }
 ```

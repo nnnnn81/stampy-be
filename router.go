@@ -47,6 +47,7 @@ func newRouter() *echo.Echo {
 	})
 	e.POST("/signup", controller.Signup)
 	e.POST("/login", controller.Login)
+	e.GET("/check-email", controller.UserEmailCheck)
 
 	r := e.Group("/auth")
 	r.Use(middleware.JWTWithConfig(config))

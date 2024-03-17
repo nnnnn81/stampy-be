@@ -46,6 +46,23 @@ res（200）
 }
 ```
 
+### POST  /check-email
+登録済みメールアドレスの確認
+
+req
+```
+{
+  "email": "hoge@example.com",
+}
+```
+res（200）
+```
+{
+  "doesUserExist": true
+}
+```
+
+
 ## これ以下はすべてtoken必要
 ### GET  /user
 ユーザー情報取得

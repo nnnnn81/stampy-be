@@ -111,7 +111,7 @@ res（403）
 なし
 ```
 
-### POST  /stampcard
+### ☑️✅POST  /stampcard
 スタンプカードの作成
 
 req
@@ -134,7 +134,7 @@ res（201）
 }
 ```
 ### GET  /stampcard
-スタンプカード取得
+スタンプカード一覧取得
 
 req
 ```
@@ -223,6 +223,41 @@ res（200）
       "backgroundUrl": "https://source.unsplash.com/ZkOt0N7rP4s",
     }
   ]
+}
+```
+
+### GET  /stampcard/:id
+スタンプカードの取得
+
+req
+```
+なし
+```
+
+res（200）
+```
+{
+    "id": "",
+    "title": `title`,
+    "createdBy": {
+      "id": "0",
+      "username": "username",
+      "email": "createUser@gmail.com",
+      "avatarUrl": "",
+    },
+    "joinedUser": {
+      "id": "1",
+      "username": "username",
+      "email": "joinedUser@gmail.com",
+      "avatarUrl": "",
+    },
+    "createdAt": "2024-02-22 00:00:00",
+    "updatedAt": "2024-02-22 00:00:00",
+    "currentDay": 0,
+    "isCompleted": 0,
+    "isDeleted": false,
+    "stampNodes": [],
+    "backgroundUrl": "https://source.unsplash.com/ZkOt0N7rP4s",
 }
 ```
 

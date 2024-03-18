@@ -9,7 +9,7 @@
 
 ## API
 
-### POST  /signup
+### ☑️✅POST  /signup
 新規ユーザー作成
 
 req
@@ -27,7 +27,7 @@ res（201）
 }
 ```
 
-### POST  /login
+### ☑️✅POST  /login
 ログイン
 
 req
@@ -44,7 +44,7 @@ res（200）
 }
 ```
 
-### POST  /check-email
+### ☑️✅POST  /check-email
 登録済みメールアドレスの確認
 
 req
@@ -62,7 +62,7 @@ res（200）
 
 
 ## これ以下はすべてtoken必要
-### GET  /user
+### ☑️✅GET  /user
 ユーザー情報取得
 
 req
@@ -78,7 +78,7 @@ res（200）
   "avatarUrl": "",
 }
 ```
-### PUT  /user
+### ☑️✅PUT  /user
 ユーザー情報の更新(パスワード以外)  
 req
 ```
@@ -93,7 +93,7 @@ res（204）
 なし
 ```
 
-### PUT  /user/pwd
+### ☑️✅PUT  /user/pwd
 ユーザー情報の更新  
 req
 ```
@@ -130,26 +130,7 @@ req
 res（201）
 ```
 {
-    title: `title`,
-    createdBy: {
-      "id": "0",
-      username: "username",
-      email: "createUser@gmail.com",
-      avatarUrl: "",
-    },
-    joinedUser: {
-      "id": "1",
-      username: "username",
-      email: "joinedUser@gmail.com",
-      avatarUrl: "",
-    },
-    createdAt: "2024-02-22 00:00:00",
-    updatedAt: "2024-02-22 00:00:00",
-    currentDay: 0,
-    isCompleted: 0,
-    isDeleted: false,
-    stampNodes: [],
-    backgroundUrl: "https://source.unsplash.com/ZkOt0N7rP4s",
+  "id": ""
 }
 ```
 ### GET  /stampcard

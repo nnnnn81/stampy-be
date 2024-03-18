@@ -133,8 +133,8 @@ res（201）
   "id": ""
 }
 ```
-### GET  /stampcard
-スタンプカード一覧取得
+### GET  /stampcard?query={keyword}
+スタンプカード一覧取得withクエリ絞り込み(要相談)
 
 req
 ```
@@ -226,7 +226,7 @@ res（200）
 }
 ```
 
-### GET  /stampcard/:id
+###  ☑️✅GET  /stampcard/:id
 スタンプカードの取得
 
 req

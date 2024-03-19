@@ -215,7 +215,7 @@ func CardUpdate(c echo.Context) error {
 			card.CurrentDay = obj.CurrentDay
 			card.IsCompleted = obj.IsCompleted
 			card.BackgroundUrl = obj.BackgroundUrl
-			db.DB.Save(&user)
+			db.DB.Save(&user_)
 			return c.JSON(http.StatusCreated, echo.Map{
 				"id":            card.Id,
 				"title":         card.Title,

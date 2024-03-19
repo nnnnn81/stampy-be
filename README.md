@@ -9,7 +9,7 @@
 
 ## API
 
-### POST  /signup
+### ☑️✅POST  /signup
 新規ユーザー作成
 
 req
@@ -17,26 +17,24 @@ req
 {
   "username": "username",
   "email": "hoge@example.com",
-  "hashedPassword": "hashedPass",
+  "password": "hashedPass",
 }
 ```
 res（201）
 ```
 {
-  "username": "",
-  "email": "",
   "token": "",
 }
 ```
 
-### POST  /login
+### ☑️✅POST  /login
 ログイン
 
 req
 ```
 {
   "email": "hoge@example.com",
-  "hashedPassword": "hashedPass",
+  "password": "hashedPass",
 }
 ```
 res（200）
@@ -46,8 +44,25 @@ res（200）
 }
 ```
 
+### ☑️✅POST  /check-email
+登録済みメールアドレスの確認
+
+req
+```
+{
+  "email": "hoge@example.com",
+}
+```
+res（200）
+```
+{
+  "doesUserExist": true
+}
+```
+
+
 ## これ以下はすべてtoken必要
-### GET  /user
+### ☑️✅GET  /user
 ユーザー情報取得
 
 req
@@ -63,7 +78,7 @@ res（200）
   "avatarUrl": "",
 }
 ```
-### PUT  /user
+### ☑️✅PUT  /user
 ユーザー情報の更新(パスワード以外)  
 req
 ```
@@ -78,7 +93,7 @@ res（204）
 なし
 ```
 
-### PUT  /user/pwd
+### ☑️✅PUT  /user/pwd
 ユーザー情報の更新  
 req
 ```
@@ -91,8 +106,12 @@ res（204）
 ```
 なし
 ```
+res（403）
+```
+なし
+```
 
-### POST  /stampcard
+### ☑️✅POST  /stampcard
 スタンプカードの作成
 
 req
@@ -111,30 +130,11 @@ req
 res（201）
 ```
 {
-    title: `title`,
-    createdBy: {
-      "id": "0",
-      username: "username",
-      email: "createUser@gmail.com",
-      avatarUrl: "",
-    },
-    joinedUser: {
-      "id": "1",
-      username: "username",
-      email: "joinedUser@gmail.com",
-      avatarUrl: "",
-    },
-    createdAt: "2024-02-22 00:00:00",
-    updatedAt: "2024-02-22 00:00:00",
-    currentDay: 0,
-    isCompleted: 0,
-    isDeleted: false,
-    stampNodes: [],
-    backgroundUrl: "https://source.unsplash.com/ZkOt0N7rP4s",
+  "id": ""
 }
 ```
-### GET  /stampcard
-スタンプカード取得
+### GET  /stampcard?query={keyword}
+スタンプカード一覧取得withクエリ絞り込み(要相談)
 
 req
 ```
@@ -226,6 +226,41 @@ res（200）
 }
 ```
 
+###  ☑️✅GET  /stampcard/:id
+スタンプカードの取得
+
+req
+```
+なし
+```
+
+res（200）
+```
+{
+    "id": "",
+    "title": `title`,
+    "createdBy": {
+      "id": "0",
+      "username": "username",
+      "email": "createUser@gmail.com",
+      "avatarUrl": "",
+    },
+    "joinedUser": {
+      "id": "1",
+      "username": "username",
+      "email": "joinedUser@gmail.com",
+      "avatarUrl": "",
+    },
+    "createdAt": "2024-02-22 00:00:00",
+    "updatedAt": "2024-02-22 00:00:00",
+    "currentDay": 0,
+    "isCompleted": 0,
+    "isDeleted": false,
+    "stampNodes": [],
+    "backgroundUrl": "https://source.unsplash.com/ZkOt0N7rP4s",
+}
+```
+
 ### PUT  /stampcard/:id
 スタンプカードの更新
 
@@ -273,6 +308,20 @@ res（201）
 }
 ```
 
+### POST  /claim-stamp
+スタンプ通知作成のトリガー
+
+req
+```
+なし
+```
+
+res（204）
+```
+なし ## スタンプを押す側に通知を作成する
+```
+
+
 ### POST  /notice
 レター/通知の作成
 
@@ -306,7 +355,7 @@ res（201）
 }
 ```
 ### GET  /notice
-通知/レターの一覧取得
+通知の一覧取得withクエリ絞り込み(要相談)
 
 req
 ```
@@ -317,54 +366,173 @@ res（200）
 ```
 {
   notice: [
-    {
-      type: "notification",
+   {
+    type: "notification",
+    id: "1",
+    title: "テキストアイテム",
+    stamp: "🌟",
+    content:
+      "テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト",
+    hrefPrefix: "/letter",
+    sender: {
       id: "1",
-      title: "",
-      stamp: "🌟",
-      content: "",
-      hrefPrefix: "/letter",
-      sender: {
-        id: "1",
-        username: "username",
-        email: "email",
-        avatarUrl: "",
-      },
-      receiver: {
-        id: "1",
-        username: "username",
-        email: "email",
-        avatarUrl: "",
-      },
-      read: true,
-      createdAt: "createdAt",
-      listType: "text",
+      username: "username",
+      email: "email",
+      avatarUrl:
+        "https://images.unsplash.com/photo-1548142813-c348350df52b?&w=150&h=150&dpr=2&q=80",
     },
-    {
-      type: "notification",
+    receiver: {
       id: "1",
-      title: "",
-      stamp: "🌟",
-      content: "",
-      hrefPrefix: "/letter",
-      sender: {
-        id: "1",
-        username: "username",
-        email: "email",
-        avatarUrl: "",
-      },
-      receiver: {
-        id: "1",
-        username: "username",
-        email: "email",
-        avatarUrl: "",
-      },
-      read: true,
-      createdAt: "createdAt",
-      listType: "text",
-    }
+      username: "username",
+      email: "email",
+      avatarUrl:
+        "https://images.unsplash.com/photo-1531384441138-2736e62e0919?&w=100&h=100&dpr=2&q=80",
+    },
+    read: true,
+    createdAt: "createdAt",
+    sendAt: "sendAt",
+    listType: "text",
+  },
+  {
+    type: "notification",
+    id: "2",
+    title: "最終日ダイアログ",
+    content:
+      "テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト",
+    stamp: "stamp",
+    currentDay: 10,
+    isLastDay: true,
+    hrefPrefix: "hrefPrefix",
+    sender: {
+      id: "1",
+      username: "username",
+      email: "email",
+      avatarUrl:
+        "https://images.unsplash.com/photo-1548142813-c348350df52b?&w=150&h=150&dpr=2&q=80",
+    },
+    receiver: {
+      id: "1",
+      username: "username",
+      email: "email",
+      avatarUrl:
+        "https://images.unsplash.com/photo-1531384441138-2736e62e0919?&w=100&h=100&dpr=2&q=80",
+    },
+    read: false,
+    createdAt: "createdAt",
+    sendAt: "sendAt",
+    listType: "sender-dialog",
+  }
   ]
 }
+```
+### GET  /letters
+レターの一覧取得withクエリ絞り込み(要相談)
+
+req
+```
+なし
+```
+
+res（200）
+```
+{
+  letters: [
+  {
+    type: "letter",
+    id: "1",
+    title: "「カードタイトル」への完走レター",
+    stamp: "🌟",
+    content:
+      "テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト",
+    hrefPrefix: "/letter",
+    sender: {
+      id: "1",
+      username: "username",
+      email: "email",
+      avatarUrl:
+        "https://images.unsplash.com/photo-1548142813-c348350df52b?&w=150&h=150&dpr=2&q=80",
+    },
+    receiver: {
+      id: "1",
+      username: "username",
+      email: "email",
+      avatarUrl:
+        "https://images.unsplash.com/photo-1531384441138-2736e62e0919?&w=100&h=100&dpr=2&q=80",
+    },
+    read: true,
+    createdAt: "createdAt",
+    sendAt: "sendAt",
+    listType: "link",
+  },
+  {
+    type: "letter",
+    id: "2",
+    title: "「カードタイトル」への完走レター",
+    content:
+      "テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト",
+    stamp: "🌟",
+    hrefPrefix: "/letter",
+    sender: {
+      id: "1",
+      username: "username",
+      email: "email",
+      avatarUrl:
+        "https://images.unsplash.com/photo-1548142813-c348350df52b?&w=150&h=150&dpr=2&q=80",
+    },
+    receiver: {
+      id: "1",
+      username: "username",
+      email: "email",
+      avatarUrl:
+        "https://images.unsplash.com/photo-1531384441138-2736e62e0919?&w=100&h=100&dpr=2&q=80",
+    },
+    read: false,
+    createdAt: "createdAt",
+    sendAt: "sendAt",
+    listType: "link",
+  }
+]
+}
+```
+
+### GET  /letters/:id
+レター取得
+
+req
+```
+なし
+```
+
+res（200）
+```
+  {
+    type: "letter",
+    id: "2",
+    title: "「カードタイトル」への完走レター",
+    content:
+      "テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト",
+    stamp: "🌟",
+    hrefPrefix: "/letter",
+    sender: {
+      id: "1",
+      username: "username",
+      email: "email",
+      avatarUrl:
+        "https://images.unsplash.com/photo-1548142813-c348350df52b?&w=150&h=150&dpr=2&q=80",
+    },
+    receiver: {
+      id: "1",
+      username: "username",
+      email: "email",
+      avatarUrl:
+        "https://images.unsplash.com/photo-1531384441138-2736e62e0919?&w=100&h=100&dpr=2&q=80",
+    },
+    read: false,
+    createdAt: "createdAt",
+    sendAt: "sendAt",
+    listType: "link",
+  }
+
 ```
 
 

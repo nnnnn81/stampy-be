@@ -70,12 +70,12 @@ func NoticeShow(c echo.Context) error {
 			omitedsender.Id = sender.Id
 			omitedsender.Email = sender.Email
 			omitedsender.Username = sender.Username
-			omitedsender.AvaterUrl = sender.AvaterUrl
+			omitedsender.AvatarUrl = sender.AvatarUrl
 			var omitedreceiver model.OmitUser
 			omitedreceiver.Id = receiver.Id
 			omitedreceiver.Email = receiver.Email
 			omitedreceiver.Username = receiver.Username
-			omitedreceiver.AvaterUrl = receiver.AvaterUrl
+			omitedreceiver.AvatarUrl = receiver.AvatarUrl
 
 			responseData = append(responseData, echo.Map{
 				"id":         notice.Id,

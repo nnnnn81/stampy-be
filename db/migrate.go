@@ -26,7 +26,7 @@ func Migrate() {
 		Username:       "user",
 		Email:          "user@teamb.com",
 		HashedPassword: hashedPass,
-		AvaterUrl:      "https://hogheoge.com",
+		AvatarUrl:      "https://hogheoge.com",
 	}
 	DB.Create(&user)
 	log.Print("[INFO] DB Migrated!")

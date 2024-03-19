@@ -18,7 +18,7 @@ func newRouter() *echo.Echo {
 	godotenv.Load(".env")
 	e := echo.New()
 	db.Connect()
-	// db.Migrate()
+	db.Migrate()
 
 	config := middleware.JWTConfig{
 		SigningKey: []byte(os.Getenv("JWT_SECRET_KEY")),
@@ -47,7 +47,7 @@ func newRouter() *echo.Echo {
 	})
 	e.POST("/signup", controller.Signup)
 	e.POST("/login", controller.Login)
-	e.GET("/check-email", controller.UserEmailCheck)
+	e.POST("/check-email", controller.UserEmailCheck)
 
 	r := e.Group("/auth")
 	r.Use(middleware.JWTWithConfig(config))

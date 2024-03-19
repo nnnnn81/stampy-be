@@ -165,17 +165,7 @@ func CardCreate(c echo.Context) error {
 		db.DB.Create(&new)
 
 		return c.JSON(http.StatusCreated, echo.Map{
-			"id":            new.Id,
-			"title":         new.Title,
-			"CreatedBy":     new.CreatedBy,
-			"JoinedUser":    new.JoinedUser,
-			"startDate":     new.StartDate,
-			"endDate":       new.EndDate,
-			"CurrentDay":    new.CurrentDay,
-			"IsStampy":      new.IsStampy,
-			"IsCompleted":   new.IsCompleted,
-			"IsDeleted":     new.IsDeleted,
-			"BackgroundUrl": new.BackgroundUrl,
+			"id": new.Id,
 		})
 	}
 }

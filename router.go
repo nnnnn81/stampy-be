@@ -47,6 +47,7 @@ func newRouter() *echo.Echo {
 	})
 	e.POST("/signup", controller.Signup)
 	e.POST("/login", controller.Login)
+	e.GET("/check-email", controller.UserEmailCheck)
 
 	r := e.Group("/auth")
 	r.Use(middleware.JWTWithConfig(config))
@@ -59,8 +60,7 @@ func newRouter() *echo.Echo {
 	r.PUT("/stampcard/:id", controller.CardUpdate)
 	r.POST("/stamp", controller.StampCreate)
 	r.GET("/notice", controller.NoticeShow)
-	r.POST("/notice/sender", controller.SenderNoticeCreate)
-	r.POST("/notice/letter", controller.LetterCreate)
+	r.POST("/notice", controller.NoticeCreate)
 	r.PUT("/notice/read", controller.ReadUpdate)
 
 	return e

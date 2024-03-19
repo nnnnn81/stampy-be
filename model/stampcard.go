@@ -6,7 +6,7 @@ type Stampcard struct {
 	Id            uint      `gorm:"primary_key" json:"id"`
 	Title         string    `gorm:"not null" json:"title"`
 	CreatedBy     uint      `json:"CreatedBy"`
-	JoinedUser    string    `json:"JoinedUser"`
+	JoinedUser    uint      `json:"JoinedUser"`
 	CreatedAt     time.Time `json:"createdAt"`
 	UpdatedAt     time.Time `json:"updatedAt"`
 	StartDate     string    `json:"startDate"`

@@ -50,12 +50,20 @@ func Signup(c echo.Context) error {
 				AvaterUrl:      obj.AvaterUrl,
 			}
 			db.DB.Create(&new)
-			return c.JSON(http.StatusCreated, echo.Map{
-				"id":         new.Id,
-				"username":   new.Username,
-				"email":      new.Email,
-				"created_at": user.CreatedAt,
-				"updated_at": user.UpdatedAt,
+
+			// ペイロード作成
+			claims := jwt.MapClaims{
+				"id":  new.Id,
+				"exp": time.Now().Add(time.Hour * 24).Unix(),
+			}
+			token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+			tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET_KEY")))
+			if err != nil {
+				return err
+			}
+			// return 200
+			return c.JSON(http.StatusOK, echo.Map{
+				"token": tokenString,
 			})
 		} else {
 			return c.JSON(http.StatusBadRequest, echo.Map{
@@ -261,5 +269,29 @@ func UserPassUpdate(c echo.Context) error {
 				"message": "incorrect password",
 			})
 		}
+	}
+}
+func UserEmailCheck(c echo.Context) error {
+	type Body struct {
+		Email string `json:"email"`
+	}
+	obj := new(Body)
+	if err := c.Bind(obj); err != nil {
+		// return 400
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": "Json Format Error: " + err.Error(),
+		})
+	}
+	var user model.User
+	if err := db.DB.Where("email = ?", obj.Email).First(&user).Error; err != nil {
+		// return 200
+		return c.JSON(http.StatusNotFound, echo.Map{
+			"doesUserExist": false,
+		})
+
+	} else {
+		return c.JSON(http.StatusOK, echo.Map{
+			"doesUserExist": true,
+		})
 	}
 }

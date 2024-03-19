@@ -17,7 +17,7 @@ req
 {
   "username": "username",
   "email": "hoge@example.com",
-  "hashedPassword": "hashedPass",
+  "password": "hashedPass",
 }
 ```
 res（201）
@@ -34,7 +34,7 @@ req
 ```
 {
   "email": "hoge@example.com",
-  "hashedPassword": "hashedPass",
+  "password": "hashedPass",
 }
 ```
 res（200）
@@ -44,7 +44,7 @@ res（200）
 }
 ```
 
-### ☑️✅POST  /check-email
+### ☑️✅GET  /check-email
 登録済みメールアドレスの確認
 
 req

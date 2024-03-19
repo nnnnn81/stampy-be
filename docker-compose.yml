@@ -10,7 +10,8 @@ services:
     ports:
       - 8080:8080
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     volumes:
       - .:/app
 
@@ -33,6 +34,10 @@ services:
         target: /var/lib/mysql
     networks:
       - default
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
 
 networks:
   default:

@@ -9,7 +9,7 @@
 
 ## API
 
-### POST  /signup
+### ☑️✅POST  /signup
 新規ユーザー作成
 
 req
@@ -23,13 +23,11 @@ req
 res（201）
 ```
 {
-  "username": "",
-  "email": "",
   "token": "",
 }
 ```
 
-### POST  /login
+### ☑️✅POST  /login
 ログイン
 
 req
@@ -46,8 +44,25 @@ res（200）
 }
 ```
 
+### ☑️✅POST  /check-email
+登録済みメールアドレスの確認
+
+req
+```
+{
+  "email": "hoge@example.com",
+}
+```
+res（200）
+```
+{
+  "doesUserExist": true
+}
+```
+
+
 ## これ以下はすべてtoken必要
-### GET  /user
+### ☑️✅GET  /user
 ユーザー情報取得
 
 req
@@ -63,7 +78,7 @@ res（200）
   "avatarUrl": "",
 }
 ```
-### PUT  /user
+### ☑️✅PUT  /user
 ユーザー情報の更新(パスワード以外)  
 req
 ```
@@ -78,7 +93,7 @@ res（204）
 なし
 ```
 
-### PUT  /user/pwd
+### ☑️✅PUT  /user/pwd
 ユーザー情報の更新  
 req
 ```
@@ -91,8 +106,12 @@ res（204）
 ```
 なし
 ```
+res（403）
+```
+なし
+```
 
-### POST  /stampcard
+### ☑️✅POST  /stampcard
 スタンプカードの作成
 
 req
@@ -111,30 +130,11 @@ req
 res（201）
 ```
 {
-    title: `title`,
-    createdBy: {
-      "id": "0",
-      username: "username",
-      email: "createUser@gmail.com",
-      avatarUrl: "",
-    },
-    joinedUser: {
-      "id": "1",
-      username: "username",
-      email: "joinedUser@gmail.com",
-      avatarUrl: "",
-    },
-    createdAt: "2024-02-22 00:00:00",
-    updatedAt: "2024-02-22 00:00:00",
-    currentDay: 0,
-    isCompleted: 0,
-    isDeleted: false,
-    stampNodes: [],
-    backgroundUrl: "https://source.unsplash.com/ZkOt0N7rP4s",
+  "id": ""
 }
 ```
-### GET  /stampcard
-スタンプカード取得
+### GET  /stampcard?query={keyword}
+スタンプカード一覧取得withクエリ絞り込み(要相談)
 
 req
 ```
@@ -223,6 +223,41 @@ res（200）
       "backgroundUrl": "https://source.unsplash.com/ZkOt0N7rP4s",
     }
   ]
+}
+```
+
+###  ☑️✅GET  /stampcard/:id
+スタンプカードの取得
+
+req
+```
+なし
+```
+
+res（200）
+```
+{
+    "id": "",
+    "title": `title`,
+    "createdBy": {
+      "id": "0",
+      "username": "username",
+      "email": "createUser@gmail.com",
+      "avatarUrl": "",
+    },
+    "joinedUser": {
+      "id": "1",
+      "username": "username",
+      "email": "joinedUser@gmail.com",
+      "avatarUrl": "",
+    },
+    "createdAt": "2024-02-22 00:00:00",
+    "updatedAt": "2024-02-22 00:00:00",
+    "currentDay": 0,
+    "isCompleted": 0,
+    "isDeleted": false,
+    "stampNodes": [],
+    "backgroundUrl": "https://source.unsplash.com/ZkOt0N7rP4s",
 }
 ```
 

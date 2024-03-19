@@ -316,7 +316,7 @@ req
 なし
 ```
 
-res（203）
+res（204）
 ```
 なし ## スタンプを押す側に通知を作成する
 ```
@@ -355,7 +355,7 @@ res（201）
 }
 ```
 ### GET  /notice
-通知/レターの一覧取得
+通知の一覧取得withクエリ絞り込み(要相談)
 
 req
 ```
@@ -366,53 +366,132 @@ res（200）
 ```
 {
   notice: [
-    {
-      type: "notification",
+   {
+    type: "notification",
+    id: "1",
+    title: "テキストアイテム",
+    stamp: "🌟",
+    content:
+      "テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト",
+    hrefPrefix: "/letter",
+    sender: {
       id: "1",
-      title: "",
-      stamp: "🌟",
-      content: "",
-      hrefPrefix: "/letter",
-      sender: {
-        id: "1",
-        username: "username",
-        email: "email",
-        avatarUrl: "",
-      },
-      receiver: {
-        id: "1",
-        username: "username",
-        email: "email",
-        avatarUrl: "",
-      },
-      read: true,
-      createdAt: "createdAt",
-      listType: "text",
+      username: "username",
+      email: "email",
+      avatarUrl:
+        "https://images.unsplash.com/photo-1548142813-c348350df52b?&w=150&h=150&dpr=2&q=80",
     },
-    {
-      type: "notification",
+    receiver: {
       id: "1",
-      title: "",
-      stamp: "🌟",
-      content: "",
-      hrefPrefix: "/letter",
-      sender: {
-        id: "1",
-        username: "username",
-        email: "email",
-        avatarUrl: "",
-      },
-      receiver: {
-        id: "1",
-        username: "username",
-        email: "email",
-        avatarUrl: "",
-      },
-      read: true,
-      createdAt: "createdAt",
-      listType: "text",
-    }
+      username: "username",
+      email: "email",
+      avatarUrl:
+        "https://images.unsplash.com/photo-1531384441138-2736e62e0919?&w=100&h=100&dpr=2&q=80",
+    },
+    read: true,
+    createdAt: "createdAt",
+    sendAt: "sendAt",
+    listType: "text",
+  },
+  {
+    type: "notification",
+    id: "2",
+    title: "最終日ダイアログ",
+    content:
+      "テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト",
+    stamp: "stamp",
+    currentDay: 10,
+    isLastDay: true,
+    hrefPrefix: "hrefPrefix",
+    sender: {
+      id: "1",
+      username: "username",
+      email: "email",
+      avatarUrl:
+        "https://images.unsplash.com/photo-1548142813-c348350df52b?&w=150&h=150&dpr=2&q=80",
+    },
+    receiver: {
+      id: "1",
+      username: "username",
+      email: "email",
+      avatarUrl:
+        "https://images.unsplash.com/photo-1531384441138-2736e62e0919?&w=100&h=100&dpr=2&q=80",
+    },
+    read: false,
+    createdAt: "createdAt",
+    sendAt: "sendAt",
+    listType: "sender-dialog",
+  }
   ]
+}
+```
+### GET  /letters
+レターの一覧取得withクエリ絞り込み(要相談)
+
+req
+```
+なし
+```
+
+res（200）
+```
+{
+  letters: [
+  {
+    type: "letter",
+    id: "1",
+    title: "「カードタイトル」への完走レター",
+    stamp: "🌟",
+    content:
+      "テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト",
+    hrefPrefix: "/letter",
+    sender: {
+      id: "1",
+      username: "username",
+      email: "email",
+      avatarUrl:
+        "https://images.unsplash.com/photo-1548142813-c348350df52b?&w=150&h=150&dpr=2&q=80",
+    },
+    receiver: {
+      id: "1",
+      username: "username",
+      email: "email",
+      avatarUrl:
+        "https://images.unsplash.com/photo-1531384441138-2736e62e0919?&w=100&h=100&dpr=2&q=80",
+    },
+    read: true,
+    createdAt: "createdAt",
+    sendAt: "sendAt",
+    listType: "link",
+  },
+  {
+    type: "letter",
+    id: "2",
+    title: "「カードタイトル」への完走レター",
+    content:
+      "テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト",
+    stamp: "🌟",
+    hrefPrefix: "/letter",
+    sender: {
+      id: "1",
+      username: "username",
+      email: "email",
+      avatarUrl:
+        "https://images.unsplash.com/photo-1548142813-c348350df52b?&w=150&h=150&dpr=2&q=80",
+    },
+    receiver: {
+      id: "1",
+      username: "username",
+      email: "email",
+      avatarUrl:
+        "https://images.unsplash.com/photo-1531384441138-2736e62e0919?&w=100&h=100&dpr=2&q=80",
+    },
+    read: false,
+    createdAt: "createdAt",
+    sendAt: "sendAt",
+    listType: "link",
+  }
+]
 }
 ```
 

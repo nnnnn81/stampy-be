@@ -18,7 +18,7 @@ func Signup(c echo.Context) error {
 		Username  string `json:"username"`
 		Email     string `json:"email"`
 		Password  string `json:"password"`
-		AvaterUrl string `json:"avater_url"`
+		AvatarUrl string `json:"avatar_url"`
 	}
 
 	obj := new(Body)
@@ -47,7 +47,7 @@ func Signup(c echo.Context) error {
 				Username:       obj.Username,
 				Email:          obj.Email,
 				HashedPassword: hashedPass,
-				AvaterUrl:      obj.AvaterUrl,
+				AvatarUrl:      obj.AvatarUrl,
 			}
 			db.DB.Create(&new)
 
@@ -169,7 +169,7 @@ func UserShow(c echo.Context) error {
 		omituser.Id = user_.Id
 		omituser.Email = user_.Email
 		omituser.Username = user_.Username
-		omituser.AvaterUrl = user_.AvaterUrl
+		omituser.AvatarUrl = user_.AvatarUrl
 		// return 200
 		return c.JSON(http.StatusCreated, omituser)
 
@@ -179,7 +179,7 @@ func UserShow(c echo.Context) error {
 func UserUpdate(c echo.Context) error {
 	type Body struct {
 		Username  string `json:"username"`
-		AvaterUrl string `json:"avater_url"`
+		AvatarUrl string `json:"avatar_url"`
 	}
 
 	user := c.Get("user").(*jwt.Token)
@@ -206,13 +206,13 @@ func UserUpdate(c echo.Context) error {
 		}
 		// update todo, return 204
 		user_.Username = obj.Username
-		user_.AvaterUrl = obj.AvaterUrl
+		user_.AvatarUrl = obj.AvatarUrl
 		db.DB.Save(&user_)
 		return c.JSON(http.StatusCreated, echo.Map{
 			"id":         user_.Id,
 			"username":   user_.Username,
 			"email":      user_.Email,
-			"avater_url": user_.AvaterUrl,
+			"avatar_url": user_.AvatarUrl,
 		})
 
 	}
@@ -285,7 +285,7 @@ func UserEmailCheck(c echo.Context) error {
 	var user model.User
 	if err := db.DB.Where("email = ?", obj.Email).First(&user).Error; err != nil {
 		// return 200
-		return c.JSON(http.StatusNotFound, echo.Map{
+		return c.JSON(http.StatusOK, echo.Map{
 			"doesUserExist": false,
 		})
 

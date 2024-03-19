@@ -67,12 +67,12 @@ func CardShow(c echo.Context) error {
 			omitedcreateduser.Id = createduser.Id
 			omitedcreateduser.Email = createduser.Email
 			omitedcreateduser.Username = createduser.Username
-			omitedcreateduser.AvaterUrl = createduser.AvaterUrl
+			omitedcreateduser.AvatarUrl = createduser.AvatarUrl
 			var omitedjoineduser model.OmitUser
 			omitedjoineduser.Id = joineduser.Id
 			omitedjoineduser.Email = joineduser.Email
 			omitedjoineduser.Username = joineduser.Username
-			omitedjoineduser.AvaterUrl = joineduser.AvaterUrl
+			omitedjoineduser.AvatarUrl = joineduser.AvatarUrl
 
 			// スタンプの配列取得
 			var stampNodes []model.Stamp

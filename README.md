@@ -495,6 +495,46 @@ res（200）
 }
 ```
 
+### GET  /letters/:id
+レター取得
+
+req
+```
+なし
+```
+
+res（200）
+```
+  {
+    type: "letter",
+    id: "2",
+    title: "「カードタイトル」への完走レター",
+    content:
+      "テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト",
+    stamp: "🌟",
+    hrefPrefix: "/letter",
+    sender: {
+      id: "1",
+      username: "username",
+      email: "email",
+      avatarUrl:
+        "https://images.unsplash.com/photo-1548142813-c348350df52b?&w=150&h=150&dpr=2&q=80",
+    },
+    receiver: {
+      id: "1",
+      username: "username",
+      email: "email",
+      avatarUrl:
+        "https://images.unsplash.com/photo-1531384441138-2736e62e0919?&w=100&h=100&dpr=2&q=80",
+    },
+    read: false,
+    createdAt: "createdAt",
+    sendAt: "sendAt",
+    listType: "link",
+  }
+
+```
+
 
 
 

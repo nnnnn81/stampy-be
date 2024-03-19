@@ -99,7 +99,6 @@ req
 ```
 {
     "title": "title",
-    "createdBy": "createUser@gmail.com",
     "joinedUser": "joinedUser@gmail.com",
     "startDate": "2024-02-22 00:00:00",
     "endDate": "2024-02-22 00:00:00",

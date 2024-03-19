@@ -207,7 +207,7 @@ func UserUpdate(c echo.Context) error {
 		// update todo, return 204
 		user_.Username = obj.Username
 		user_.AvaterUrl = obj.AvaterUrl
-		db.DB.Save(&user)
+		db.DB.Save(&user_)
 		return c.JSON(http.StatusCreated, echo.Map{
 			"id":         user_.Id,
 			"username":   user_.Username,
@@ -262,7 +262,7 @@ func UserPassUpdate(c echo.Context) error {
 				})
 			}
 			user_.HashedPassword = hashedNewPass
-			db.DB.Save(&user)
+			db.DB.Save(&user_)
 			return c.JSON(http.StatusNoContent, echo.Map{})
 		} else {
 			return c.JSON(http.StatusBadRequest, echo.Map{

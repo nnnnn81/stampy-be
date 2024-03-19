@@ -285,7 +285,7 @@ func UserEmailCheck(c echo.Context) error {
 	var user model.User
 	if err := db.DB.Where("email = ?", obj.Email).First(&user).Error; err != nil {
 		// return 200
-		return c.JSON(http.StatusNotFound, echo.Map{
+		return c.JSON(http.StatusOK, echo.Map{
 			"doesUserExist": false,
 		})
 

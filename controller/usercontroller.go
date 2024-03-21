@@ -247,27 +247,26 @@ func UserPassUpdate(c echo.Context) error {
 			})
 		}
 		// パスワードの検証、ハッシュ化
-		hashedOldPass, err := util.HashPassword(obj.OldPass)
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, echo.Map{
-				"message": "Password Hashing Error",
+		if err := util.ComparePasswords(user_.HashedPassword, obj.OldPass); err != nil {
+			// return 401
+			return c.JSON(http.StatusUnauthorized, echo.Map{
+				"message": "Invalid Password",
 			})
-		}
-		if user_.HashedPassword == hashedOldPass {
+
+		} else {
 			// update todo, return 204
 			hashedNewPass, err := util.HashPassword(obj.NewPass)
 			if err != nil {
 				return c.JSON(http.StatusInternalServerError, echo.Map{
 					"message": "Password Hashing Error",
 				})
+			} else {
+				user_.HashedPassword = hashedNewPass
+				db.DB.Save(&user_)
+				return c.JSON(http.StatusOK, echo.Map{
+					"message": "password changed",
+				})
 			}
-			user_.HashedPassword = hashedNewPass
-			db.DB.Save(&user_)
-			return c.JSON(http.StatusNoContent, echo.Map{})
-		} else {
-			return c.JSON(http.StatusBadRequest, echo.Map{
-				"message": "incorrect password",
-			})
 		}
 	}
 }

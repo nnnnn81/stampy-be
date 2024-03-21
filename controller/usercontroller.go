@@ -179,7 +179,7 @@ func UserShow(c echo.Context) error {
 func UserUpdate(c echo.Context) error {
 	type Body struct {
 		Username  string `json:"username"`
-		AvatarUrl string `json:"avatar_url"`
+		AvatarUrl string `json:"avatarUrl"`
 	}
 
 	user := c.Get("user").(*jwt.Token)
@@ -205,14 +205,18 @@ func UserUpdate(c echo.Context) error {
 			})
 		}
 		// update todo, return 204
-		user_.Username = obj.Username
-		user_.AvatarUrl = obj.AvatarUrl
+		if obj.Username != "" {
+			user_.Username = obj.Username
+		}
+		if obj.AvatarUrl != "" {
+			user_.AvatarUrl = obj.AvatarUrl
+		}
 		db.DB.Save(&user_)
 		return c.JSON(http.StatusCreated, echo.Map{
-			"id":         user_.Id,
-			"username":   user_.Username,
-			"email":      user_.Email,
-			"avatar_url": user_.AvatarUrl,
+			"id":        user_.Id,
+			"username":  user_.Username,
+			"email":     user_.Email,
+			"avatarUrl": user_.AvatarUrl,
 		})
 
 	}

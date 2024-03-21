@@ -18,7 +18,7 @@ func newRouter() *echo.Echo {
 	godotenv.Load(".env")
 	e := echo.New()
 	db.Connect()
-	db.Migrate()
+	// db.Migrate()
 
 	config := middleware.JWTConfig{
 		SigningKey: []byte(os.Getenv("JWT_SECRET_KEY")),
@@ -55,7 +55,8 @@ func newRouter() *echo.Echo {
 	r.GET("/user", controller.UserShow)
 	r.PUT("/user", controller.UserUpdate)
 	r.PUT("/user/pwd", controller.UserPassUpdate)
-	r.GET("/stampcard", controller.CardShow)
+	r.GET("/stampcard", controller.CardsShow)
+	r.GET("/stampcard/:id", controller.CardShow)
 	r.POST("/stampcard", controller.CardCreate)
 	r.PUT("/stampcard/:id", controller.CardUpdate)
 	r.POST("/stamp", controller.StampCreate)

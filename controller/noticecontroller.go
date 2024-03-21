@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/golang-jwt/jwt"
@@ -346,6 +347,7 @@ func LetterShow(c echo.Context) error {
 			"read":       notice.Read,
 			"createdAt":  notice.CreatedAt,
 			"listtype":   notice.ListType,
+			"cardid":     notice.CardId,
 		}
 
 		return c.JSON(http.StatusOK, echo.Map{
@@ -358,9 +360,9 @@ func LetterShow(c echo.Context) error {
 
 func NoticeCreate(c echo.Context) error {
 	type Body struct {
-		Title    string
-		Receiver uint
+		CardId uint
 	}
+	noticetype := c.Param("type")
 
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
@@ -374,28 +376,142 @@ func NoticeCreate(c echo.Context) error {
 		})
 	}
 
-	newNotice := model.Notice{
-		Type:       "notification",
-		Title:      obj.Title,
-		HrefPrefix: "HrefPrefix",
-		Sender:     userid,
-		Receiver:   obj.Receiver,
-		ListType:   "receiver-dialog",
-	}
-	db.DB.Create(&newNotice)
+	if noticetype == "stamp" {
+		var card model.Stampcard
+		if err := db.DB.Where("id = ? and created_by = ?", obj.CardId, userid).First(&card).Error; err != nil {
+			if err == gorm.ErrRecordNotFound {
+				// return 404
+				return c.JSON(http.StatusNotFound, echo.Map{
+					"message": "card Not Found",
+				})
 
-	return c.JSON(http.StatusCreated, echo.Map{
-		"notice": newNotice,
-	})
+			} else {
+				// return 500
+				return c.JSON(http.StatusInternalServerError, echo.Map{
+					"message": "Database Error: " + err.Error(),
+				})
+			}
+		} else {
+			if card.IsStampy {
+				// stampyの時、すぐにスタンプと受け取り通知作成
+				// 一旦固定メッセージ
+				new := model.Stamp{
+					StampImg:  "🌟",
+					Message:   "えらい！",
+					Nthday:    card.CurrentDay,
+					StampedBy: 1,
+					CardId:    obj.CardId,
+				}
+				db.DB.Create(&new)
+				newNotice := model.Notice{
+					Type:       "notification",
+					Title:      "スタンプが届いています",
+					Stamp:      new.StampImg,
+					Content:    new.Message,
+					HrefPrefix: "HrefPrefix",
+					Sender:     card.JoinedUser,
+					Receiver:   card.CreatedBy,
+					ListType:   "receiver-dialog",
+					CardId:     obj.CardId,
+				}
+				db.DB.Create(&newNotice)
+				return c.JSON(http.StatusCreated, echo.Map{
+					"notice": newNotice,
+				})
+			} else {
+				newNotice := model.Notice{
+					Type:       "notification",
+					Title:      "スタンプを要求されています",
+					HrefPrefix: "HrefPrefix",
+					Sender:     card.CreatedBy,
+					Receiver:   card.JoinedUser,
+					ListType:   "sender-dialog",
+					CardId:     obj.CardId,
+				}
+				db.DB.Create(&newNotice)
+
+				return c.JSON(http.StatusCreated, echo.Map{
+					"notice": newNotice,
+				})
+			}
+		}
+	}
+	if noticetype == "letter" {
+		var card model.Stampcard
+		if err := db.DB.Where("id = ? and created_by = ?", obj.CardId, userid).First(&card).Error; err != nil {
+			if err == gorm.ErrRecordNotFound {
+				// return 404
+				return c.JSON(http.StatusNotFound, echo.Map{
+					"message": "card Not Found",
+				})
+
+			} else {
+				// return 500
+				return c.JSON(http.StatusInternalServerError, echo.Map{
+					"message": "Database Error: " + err.Error(),
+				})
+			}
+		} else {
+			if card.IsStampy {
+				// stampyの時、すぐにレターと受け取り通知作成
+				// 一旦固定メッセージ
+				new := model.Notice{
+					Type:       "letter",
+					Title:      card.Title + "の完走レター",
+					Stamp:      "🌟",
+					Content:    "完走してえらい！",
+					HrefPrefix: "/letter",
+					Sender:     card.JoinedUser,
+					Receiver:   card.CreatedBy,
+					ListType:   "link",
+					CardId:     obj.CardId,
+				}
+				db.DB.Create(&new)
+				newNotice := model.Notice{
+					Type:       "notification",
+					Title:      card.Title + "の完走レターが届いています",
+					Stamp:      "🌟",
+					Content:    "完走してえらい！",
+					HrefPrefix: "HrefPrefix",
+					Sender:     card.JoinedUser,
+					Receiver:   card.CreatedBy,
+					ListType:   "receiver-dialog",
+					CardId:     obj.CardId,
+				}
+				db.DB.Create(&newNotice)
+				return c.JSON(http.StatusCreated, echo.Map{
+					"notice": newNotice,
+				})
+			} else {
+				newNotice := model.Notice{
+					Type:       "notification",
+					Title:      "レターを要求されています",
+					HrefPrefix: "HrefPrefix",
+					Sender:     card.CreatedBy,
+					Receiver:   card.JoinedUser,
+					ListType:   "sender-dialog",
+					CardId:     obj.CardId,
+				}
+				db.DB.Create(&newNotice)
+
+				return c.JSON(http.StatusCreated, echo.Map{
+					"notice": newNotice,
+				})
+			}
+		}
+	} else {
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": "invalid type",
+		})
+	}
 }
 
 // レター＆通知作成
 func LetterCreate(c echo.Context) error {
 	type Body struct {
-		Title    string
-		Content  string
-		Stamp    string
-		Receiver uint
+		Content string
+		Stamp   string
+		CardId  uint
 	}
 
 	user := c.Get("user").(*jwt.Token)
@@ -409,33 +525,52 @@ func LetterCreate(c echo.Context) error {
 			"message": "Json Format Error: " + err.Error(),
 		})
 	}
+	log.Print(obj.CardId)
 
-	newLetter := model.Notice{
-		Type:       "letter",
-		Title:      obj.Title,
-		Stamp:      obj.Stamp,
-		Content:    obj.Content,
-		HrefPrefix: "/letter",
-		Sender:     userid,
-		Receiver:   obj.Receiver,
-		ListType:   "link",
-	}
-	db.DB.Create(&newLetter)
+	var card model.Stampcard
+	if err := db.DB.Where("id = ? and joined_user = ?", obj.CardId, userid).First(&card).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			// return 404
+			return c.JSON(http.StatusNotFound, echo.Map{
+				"message": "card Not Found",
+			})
 
-	newNotice := model.Notice{
-		Type:       "notification",
-		Title:      obj.Title,
-		Stamp:      obj.Stamp,
-		Content:    obj.Content,
-		HrefPrefix: "HrefPrefix",
-		Sender:     userid,
-		Receiver:   obj.Receiver,
-		ListType:   "receiver-dialog",
+		} else {
+			// return 500
+			return c.JSON(http.StatusInternalServerError, echo.Map{
+				"message": "Database Error: " + err.Error(),
+			})
+		}
+	} else {
+
+		newLetter := model.Notice{
+			Type:       "letter",
+			Title:      card.Title + "への完走レター",
+			Stamp:      obj.Stamp,
+			Content:    obj.Content,
+			HrefPrefix: "/letter",
+			Sender:     userid,
+			Receiver:   card.CreatedBy,
+			ListType:   "link",
+			CardId:     obj.CardId,
+		}
+		db.DB.Create(&newLetter)
+
+		newNotice := model.Notice{
+			Type:       "notification",
+			Title:      card.Title + "への完走レターが届いています",
+			Stamp:      obj.Stamp,
+			Content:    obj.Content,
+			HrefPrefix: "HrefPrefix",
+			Sender:     userid,
+			Receiver:   card.CreatedBy,
+			ListType:   "receiver-dialog",
+		}
+		db.DB.Create(&newNotice)
+		return c.JSON(http.StatusCreated, echo.Map{
+			"notice": newLetter,
+		})
 	}
-	db.DB.Create(&newNotice)
-	return c.JSON(http.StatusCreated, echo.Map{
-		"notice": newLetter,
-	})
 }
 
 // readの更新API

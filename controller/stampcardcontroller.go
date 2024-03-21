@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/golang-jwt/jwt"
@@ -10,7 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func CardShow(c echo.Context) error {
+func CardsShow(c echo.Context) error {
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
 	useridFloat := claims["id"].(float64)
@@ -48,7 +49,7 @@ func CardShow(c echo.Context) error {
 
 			// joinedUser取得
 			var joineduser model.User
-			if err := db.DB.Where("email = ?", card.JoinedUser).First(&joineduser).Error; err != nil {
+			if err := db.DB.Where("id = ?", card.JoinedUser).First(&joineduser).Error; err != nil {
 				if err == gorm.ErrRecordNotFound {
 					// return 404
 					return c.JSON(http.StatusNotFound, echo.Map{
@@ -66,12 +67,12 @@ func CardShow(c echo.Context) error {
 			omitedcreateduser.Id = createduser.Id
 			omitedcreateduser.Email = createduser.Email
 			omitedcreateduser.Username = createduser.Username
-			omitedcreateduser.AvaterUrl = createduser.AvaterUrl
+			omitedcreateduser.AvatarUrl = createduser.AvatarUrl
 			var omitedjoineduser model.OmitUser
 			omitedjoineduser.Id = joineduser.Id
 			omitedjoineduser.Email = joineduser.Email
 			omitedjoineduser.Username = joineduser.Username
-			omitedjoineduser.AvaterUrl = joineduser.AvaterUrl
+			omitedjoineduser.AvatarUrl = joineduser.AvatarUrl
 
 			// スタンプの配列取得
 			var stampNodes []model.Stamp
@@ -87,6 +88,7 @@ func CardShow(c echo.Context) error {
 			}
 
 			responseData = append(responseData, echo.Map{
+				"id":            card.Id,
 				"title":         card.Title,
 				"createdBy":     omitedcreateduser,
 				"joinedUser":    omitedjoineduser,
@@ -103,6 +105,98 @@ func CardShow(c echo.Context) error {
 		return c.JSON(http.StatusOK, echo.Map{
 			"cards": responseData,
 		})
+	}
+}
+func CardShow(c echo.Context) error {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	useridFloat := claims["id"].(float64)
+	userid := uint(useridFloat)
+	cardid := c.Param("id")
+	var card model.Stampcard
+	if err := db.DB.Where("created_by = ? and id = ?", userid, cardid).First(&card).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return c.JSON(http.StatusOK, echo.Map{
+				"message": "card not found",
+			})
+		} else {
+			return c.JSON(http.StatusInternalServerError, echo.Map{
+				"message": "Database Error: " + err.Error(),
+			})
+		}
+	} else {
+		// createdUser取得
+		log.Print(card)
+		var createduser model.User
+		if err := db.DB.Where("id = ?", card.CreatedBy).First(&createduser).Error; err != nil {
+			if err == gorm.ErrRecordNotFound {
+				// return 404
+				return c.JSON(http.StatusNotFound, echo.Map{
+					"message": "createUser Not Found",
+				})
+
+			} else {
+				// return 500
+				return c.JSON(http.StatusInternalServerError, echo.Map{
+					"message": "Database Error: " + err.Error(),
+				})
+			}
+		}
+
+		// joinedUser取得
+		var joineduser model.User
+		if err := db.DB.Where("id = ?", card.JoinedUser).First(&joineduser).Error; err != nil {
+			if err == gorm.ErrRecordNotFound {
+				// return 404
+				return c.JSON(http.StatusNotFound, echo.Map{
+					"message": "JoinedUser Not Found",
+				})
+
+			} else {
+				// return 500
+				return c.JSON(http.StatusInternalServerError, echo.Map{
+					"message": "Database Error: " + err.Error(),
+				})
+			}
+		}
+		var omitedcreateduser model.OmitUser
+		omitedcreateduser.Id = createduser.Id
+		omitedcreateduser.Email = createduser.Email
+		omitedcreateduser.Username = createduser.Username
+		omitedcreateduser.AvatarUrl = createduser.AvatarUrl
+		var omitedjoineduser model.OmitUser
+		omitedjoineduser.Id = joineduser.Id
+		omitedjoineduser.Email = joineduser.Email
+		omitedjoineduser.Username = joineduser.Username
+		omitedjoineduser.AvatarUrl = joineduser.AvatarUrl
+
+		// スタンプの配列取得
+		var stampNodes []model.Stamp
+		if err := db.DB.Where("card_id = ?", card.Id).Find(&stampNodes).Error; err != nil {
+			if err == gorm.ErrRecordNotFound {
+				stampNodes = []model.Stamp{}
+			} else {
+				// return 500
+				return c.JSON(http.StatusInternalServerError, echo.Map{
+					"message": "Database Error: " + err.Error(),
+				})
+			}
+		}
+		responseData := echo.Map{
+			"id":            card.Id,
+			"title":         card.Title,
+			"createdBy":     omitedcreateduser,
+			"joinedUser":    omitedjoineduser,
+			"createdAt":     card.CreatedAt,
+			"updatedAt":     card.UpdatedAt,
+			"currentDay":    card.CurrentDay,
+			"isCompleted":   card.IsCompleted,
+			"isDeleted":     card.IsDeleted,
+			"stampNodes":    stampNodes,
+			"backgroundUrl": card.BackgroundUrl,
+		}
+
+		return c.JSON(http.StatusOK, responseData)
 	}
 }
 
@@ -123,6 +217,7 @@ func CardCreate(c echo.Context) error {
 	claims := user.Claims.(jwt.MapClaims)
 	useridFloat := claims["id"].(float64)
 	userid := uint(useridFloat)
+	log.Print(userid)
 
 	obj := new(Body)
 	if err := c.Bind(obj); err != nil {
@@ -131,36 +226,40 @@ func CardCreate(c echo.Context) error {
 			"message": "Json Format Error: " + err.Error(),
 		})
 	}
+	var joineduser model.User
+	if err := db.DB.Where("email = ?", obj.JoinedUser).First(&joineduser).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			// return 404
+			return c.JSON(http.StatusNotFound, echo.Map{
+				"message": "User Not Found",
+			})
 
-	// create todo, return 201
-	new := model.Stampcard{
-		Title:         obj.Title,
-		CreatedBy:     userid,
-		JoinedUser:    obj.JoinedUser,
-		StartDate:     obj.StartDate,
-		EndDate:       obj.EndDate,
-		CurrentDay:    obj.CurrentDay,
-		IsStampy:      obj.IsStampy,
-		IsCompleted:   obj.IsCompleted,
-		IsDeleted:     obj.IsDeleted,
-		BackgroundUrl: obj.BackgroundUrl,
+		} else {
+			// return 500
+			return c.JSON(http.StatusInternalServerError, echo.Map{
+				"message": "Database Error: " + err.Error(),
+			})
+		}
+	} else {
+		// create todo, return 201
+		new := model.Stampcard{
+			Title:         obj.Title,
+			CreatedBy:     userid,
+			JoinedUser:    joineduser.Id,
+			StartDate:     obj.StartDate,
+			EndDate:       obj.EndDate,
+			CurrentDay:    obj.CurrentDay,
+			IsStampy:      obj.IsStampy,
+			IsCompleted:   obj.IsCompleted,
+			IsDeleted:     obj.IsDeleted,
+			BackgroundUrl: obj.BackgroundUrl,
+		}
+		db.DB.Create(&new)
+
+		return c.JSON(http.StatusCreated, echo.Map{
+			"id": new.Id,
+		})
 	}
-	db.DB.Create(&new)
-
-	return c.JSON(http.StatusCreated, echo.Map{
-		"id":            new.Id,
-		"title":         new.Title,
-		"CreatedBy":     new.CreatedBy,
-		"JoinedUser":    new.JoinedUser,
-		"startDate":     new.StartDate,
-		"endDate":       new.EndDate,
-		"CurrentDay":    new.CurrentDay,
-		"IsStampy":      new.IsStampy,
-		"IsCompleted":   new.IsCompleted,
-		"IsDeleted":     new.IsDeleted,
-		"BackgroundUrl": new.BackgroundUrl,
-	})
-
 }
 
 func CardUpdate(c echo.Context) error {
@@ -198,7 +297,7 @@ func CardUpdate(c echo.Context) error {
 			card.CurrentDay = obj.CurrentDay
 			card.IsCompleted = obj.IsCompleted
 			card.BackgroundUrl = obj.BackgroundUrl
-			db.DB.Save(&user)
+			db.DB.Save(&card)
 			return c.JSON(http.StatusCreated, echo.Map{
 				"id":            card.Id,
 				"title":         card.Title,
@@ -248,51 +347,57 @@ func StampCreate(c echo.Context) error {
 				"message": "Database Error: " + err.Error(),
 			})
 		}
-	}
-	var joinuser model.User
-	if err := db.DB.Where("email = ?", card.JoinedUser).First(&joinuser).Error; err != nil {
-		if err == gorm.ErrRecordNotFound {
-			// return 404
-			return c.JSON(http.StatusNotFound, echo.Map{
-				"message": "User Not Found",
-			})
-
-		} else {
-			// return 500
-			return c.JSON(http.StatusInternalServerError, echo.Map{
-				"message": "Database Error: " + err.Error(),
+	} else {
+		if card.JoinedUser != userid {
+			return c.JSON(http.StatusBadRequest, echo.Map{
+				"message": "you're not joined this card",
 			})
 		}
-	}
-	new := model.Stamp{
-		StampImg:  obj.StampImg,
-		Message:   obj.Message,
-		Nthday:    obj.Nthday,
-		StampedBy: userid,
-		CardId:    obj.CardId,
-	}
-	db.DB.Create(&new)
-	newnotice := model.Notice{
-		Type:       "notification",
-		Title:      "スタンプが届いています",
-		Stamp:      obj.StampImg,
-		Content:    obj.Message,
-		HrefPrefix: "hrefPrefix",
-		Sender:     userid,
-		Receiver:   joinuser.Id,
-		ListType:   "receiver-dialog",
-	}
-	db.DB.Create(&new)
+		var receiver model.User
+		if err := db.DB.Where("id = ?", card.CreatedBy).First(&receiver).Error; err != nil {
+			if err == gorm.ErrRecordNotFound {
+				// return 404
+				return c.JSON(http.StatusNotFound, echo.Map{
+					"message": "User Not Found",
+				})
 
-	return c.JSON(http.StatusCreated, echo.Map{
-		"id":        new.Id,
-		"stamp":     new.StampImg,
-		"message":   new.Message,
-		"nthday":    new.Nthday,
-		"stampedBy": new.StampedBy,
-		"cardId":    new.CardId,
-		"createdAt": new.CreatedAt,
-		"notice":    newnotice,
-	})
+			} else {
+				// return 500
+				return c.JSON(http.StatusInternalServerError, echo.Map{
+					"message": "Database Error: " + err.Error(),
+				})
+			}
+		}
+		new := model.Stamp{
+			StampImg:  obj.StampImg,
+			Message:   obj.Message,
+			Nthday:    obj.Nthday,
+			StampedBy: userid,
+			CardId:    obj.CardId,
+		}
+		db.DB.Create(&new)
+		newnotice := model.Notice{
+			Type:       "notification",
+			Title:      "スタンプが届いています",
+			Stamp:      obj.StampImg,
+			Content:    obj.Message,
+			HrefPrefix: "hrefPrefix",
+			Sender:     userid,
+			Receiver:   receiver.Id,
+			ListType:   "receiver-dialog",
+		}
+		db.DB.Create(&newnotice)
 
+		return c.JSON(http.StatusCreated, echo.Map{
+			"id":        new.Id,
+			"stamp":     new.StampImg,
+			"message":   new.Message,
+			"nthday":    new.Nthday,
+			"stampedBy": new.StampedBy,
+			"cardId":    new.CardId,
+			"createdAt": new.CreatedAt,
+			"notice":    newnotice,
+		})
+
+	}
 }

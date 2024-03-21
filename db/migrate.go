@@ -21,12 +21,12 @@ func Migrate() {
 	DB.AutoMigrate(&model.Stampcard{})
 
 	// test user 作成
-	hashedPass, _ := util.HashPassword(os.Getenv("TESTUSER_PASSWORD"))
+	hashedPass, _ := util.HashPassword(os.Getenv("STAMPY_PASSWORD"))
 	user := model.User{
-		Username:       "user",
-		Email:          "user@teamb.com",
+		Username:       "stampy",
+		Email:          "stampy@gmail.com",
 		HashedPassword: hashedPass,
-		AvaterUrl:      "https://hogheoge.com",
+		AvatarUrl:      "https://stampy.com",
 	}
 	DB.Create(&user)
 	log.Print("[INFO] DB Migrated!")

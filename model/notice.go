@@ -14,4 +14,5 @@ type Notice struct {
 	Read       bool
 	CreatedAt  time.Time
 	ListType   string
+	CardId     uint
 }

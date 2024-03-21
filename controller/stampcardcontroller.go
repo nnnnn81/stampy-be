@@ -217,7 +217,6 @@ func CardCreate(c echo.Context) error {
 	claims := user.Claims.(jwt.MapClaims)
 	useridFloat := claims["id"].(float64)
 	userid := uint(useridFloat)
-	log.Print(userid)
 
 	obj := new(Body)
 	if err := c.Bind(obj); err != nil {
@@ -226,8 +225,12 @@ func CardCreate(c echo.Context) error {
 			"message": "Json Format Error: " + err.Error(),
 		})
 	}
+	joineduserEmail := obj.JoinedUser
+	if obj.IsStampy {
+		joineduserEmail = "stampy@gmail.com"
+	}
 	var joineduser model.User
-	if err := db.DB.Where("email = ?", obj.JoinedUser).First(&joineduser).Error; err != nil {
+	if err := db.DB.Where("email = ?", joineduserEmail).First(&joineduser).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			// return 404
 			return c.JSON(http.StatusNotFound, echo.Map{

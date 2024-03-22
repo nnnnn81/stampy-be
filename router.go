@@ -59,7 +59,7 @@ func newRouter() *echo.Echo {
 	r.GET("/stampcard/:id", controller.CardShow)
 	r.POST("/stampcard", controller.CardCreate)
 	r.PUT("/stampcard/:id", controller.CardUpdate)
-	r.POST("/stamp", controller.StampCreate)
+	r.PUT("/stamp", controller.StampCreate)
 	r.GET("/notice", controller.NoticesShow)
 	r.GET("/notice/:id", controller.NoticeShow)
 	r.GET("/letter", controller.LettersShow)

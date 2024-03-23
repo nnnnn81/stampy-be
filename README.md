@@ -92,7 +92,6 @@ res（204）
 ```
 なし
 ```
-
 ### ☑️✅PUT  /user/pwd
 ユーザー情報の更新  
 req
@@ -307,33 +306,15 @@ res（201）
 }
 ```
 
-### POST  /claim-stamp
-スタンプ通知作成のトリガー
-
-req
-```
-なし
-```
-
-res（204）
-```
-なし ## スタンプを押す側に通知を作成する
-```
-
-
 ### POST  /notice
-レター/通知の作成
+通知の作成
+isStampy == trueならスタンプと通知（スタンプが届きました）  
+それ以外なら通知（スタンプを要求されています）←もうちょい良い言い方あるかも
 
 req
 ```
 {
-  type: "notification",
-  title: "",
-  stamp: "🌟",
-  content: "",
-  hrefPrefix: "/letter".
-  receiver: 1 ## receiverのuserid
-  listType: "link"
+  StampId: 1
 }
 ```
 
@@ -345,7 +326,34 @@ res（201）
   title: "",
   stamp: "🌟",
   content: "",
-  hrefPrefix: "/letter", // letterのとき"/letter"になってほしい、みたいなはなし
+  hrefPrefix: "",
+  sender: 2,
+  receiver: 1,
+  read: false,
+  createdAt: "2024-02-22 00:00:00",
+  listType: "",
+}
+```
+### POST  /letter
+レターの作成(同時に通知も作成)
+
+
+req
+```
+{
+  StampId: 1
+}
+```
+
+res（201）
+```
+{
+  type: "letter",
+  id: "1",
+  title: "titleへの完走レター",
+  stamp: "🌟",
+  content: "",
+  hrefPrefix: "/letter",
   sender: 2,
   receiver: 1,
   read: false,
@@ -353,6 +361,7 @@ res（201）
   listType: "link",
 }
 ```
+
 ### GET  /notice
 通知の一覧取得withクエリ絞り込み(要相談)
 
@@ -424,6 +433,47 @@ res（200）
   ]
 }
 ```
+### GET  /notice/:id
+通知取得
+
+req
+```
+なし
+```
+
+res（200）
+```
+  {
+    type: "notifcation",
+    id: "2",
+    title: "「カードタイトル」への完走レター",
+    content:
+      "テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト",
+    stamp: "🌟",
+    hrefPrefix: "",
+    sender: {
+      id: "1",
+      username: "username",
+      email: "email",
+      avatarUrl:
+        "https://images.unsplash.com/photo-1548142813-c348350df52b?&w=150&h=150&dpr=2&q=80",
+    },
+    receiver: {
+      id: "1",
+      username: "username",
+      email: "email",
+      avatarUrl:
+        "https://images.unsplash.com/photo-1531384441138-2736e62e0919?&w=100&h=100&dpr=2&q=80",
+    },
+    read: false,
+    createdAt: "createdAt",
+    listType: "",
+  }
+
+```
+
+
+
 ### GET  /letters
 レターの一覧取得withクエリ絞り込み(要相談)
 
@@ -493,7 +543,6 @@ res（200）
 ]
 }
 ```
-
 ### GET  /letters/:id
 レター取得
 
@@ -535,15 +584,15 @@ res（200）
 ```
 
 
+### PUT  /notice/read/:id
+通知の既読
 
+req
+```
+なし
+```
 
-## バックエンドで考えること
-
-### /user
-- パスワード更新だけわけたい
-
-### /auth
-- `/auth`  
-認証用, emailとpasswordを受け取ってjwtを返す、jwtにuseridを含める
-
-## その他
+res
+```
+なし
+```

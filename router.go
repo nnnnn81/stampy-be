@@ -66,7 +66,7 @@ func newRouter() *echo.Echo {
 	r.GET("/letter/:id", controller.LetterShow)
 	r.POST("/notice", controller.NoticeCreate)
 	r.POST("/letter", controller.LetterCreate)
-	r.PUT("/notice/read", controller.ReadUpdate)
+	r.PUT("/notice/read/:id", controller.ReadUpdate)
 
 	return e
 }

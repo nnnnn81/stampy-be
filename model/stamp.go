@@ -12,4 +12,5 @@ type Stamp struct {
 	StampedBy uint      `json:"stampedBy"`
 	CardId    uint      `json:"cardId"`
 	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }

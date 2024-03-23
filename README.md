@@ -17,7 +17,7 @@ req
 {
   "username": "username",
   "email": "hoge@example.com",
-  "password": "hashedPass",
+  "password": "Password@11",
 }
 ```
 res（201）
@@ -34,7 +34,7 @@ req
 ```
 {
   "email": "hoge@example.com",
-  "password": "hashedPass",
+  "password": "Password@11",
 }
 ```
 res（200）
@@ -62,7 +62,7 @@ res（200）
 
 
 ## これ以下はすべてtoken必要
-### ☑️✅GET  /user
+### ☑️✅GET  /auth/user
 ユーザー情報取得
 
 req
@@ -78,7 +78,7 @@ res（200）
   "avatarUrl": "",
 }
 ```
-### ☑️✅PUT  /user
+### ☑️✅PUT  /auth/user
 ユーザー情報の更新(パスワード以外)  
 req
 ```
@@ -93,7 +93,7 @@ res（204）
 なし
 ```
 
-### ☑️✅PUT  /user/pwd
+### ☑️✅PUT  /auth/user/pwd
 ユーザー情報の更新  
 req
 ```
@@ -111,7 +111,7 @@ res（403）
 なし
 ```
 
-### ☑️✅POST  /stampcard
+### ☑️✅POST  /auth/stampcard
 スタンプカードの作成
 
 req
@@ -132,7 +132,7 @@ res（201）
   "id": ""
 }
 ```
-### GET  /stampcard?query={keyword}
+### GET  /auth/stampcard?query={keyword}
 スタンプカード一覧取得withクエリ絞り込み(要相談)
 
 req
@@ -225,7 +225,7 @@ res（200）
 }
 ```
 
-###  ☑️✅GET  /stampcard/:id
+###  ☑️✅GET  /auth/stampcard/:id
 スタンプカードの取得
 
 req
@@ -260,7 +260,7 @@ res（200）
 }
 ```
 
-### PUT  /stampcard/:id
+### PUT  /auth/stampcard/:id
 スタンプカードの更新
 
 req
@@ -277,7 +277,7 @@ res（204）
 ```
 なし
 ```
-### POST  /stamp
+### POST   /auth/stamp
 スタンプの作成（取得はスタンプカードと同時に、更新、削除処理はなし）
 
 req
@@ -534,9 +534,6 @@ res（200）
 
 ```
 
-
-
-
 ## バックエンドで考えること
 
 ### /user
@@ -547,3 +544,11 @@ res（200）
 認証用, emailとpasswordを受け取ってjwtを返す、jwtにuseridを含める
 
 ## その他
+- PRを参照
+- APIの過不足確認
+- スタンプくださいの通知API
+- レターくださいの通知API
+- 特に通知・レター関係はDBの変更が加わりそう
+- パスワード・ユーザ情報の変更ができない件
+- push通知はNGなので期限周りのバッチ処理は必要ない
+- メタ情報周りのAPIを作成するかどうか

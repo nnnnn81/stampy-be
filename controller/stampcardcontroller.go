@@ -245,13 +245,17 @@ func CardCreate(c echo.Context) error {
 			})
 		}
 	} else {
-		// create todo, return 201
+		// create card, return 201
+		startDate, _ := time.Parse("2006-01-02 00:00:00", obj.StartDate)
+		endDate, _ := time.Parse("2006-01-02 00:00:00", obj.EndDate)
+		days := int(endDate.Sub(startDate).Hours() / 24)
 		new := model.Stampcard{
 			Title:         obj.Title,
 			CreatedBy:     userid,
 			JoinedUser:    joineduser.Id,
 			StartDate:     obj.StartDate,
 			EndDate:       obj.EndDate,
+			Days:          days,
 			CurrentDay:    obj.CurrentDay,
 			IsStampy:      obj.IsStampy,
 			IsCompleted:   obj.IsCompleted,
@@ -259,10 +263,6 @@ func CardCreate(c echo.Context) error {
 			BackgroundUrl: obj.BackgroundUrl,
 		}
 		db.DB.Create(&new)
-
-		startDate, _ := time.Parse("2006-01-02 00:00:00", obj.StartDate)
-		endDate, _ := time.Parse("2006-01-02 00:00:00", obj.EndDate)
-		days := int(endDate.Sub(startDate).Hours() / 24)
 
 		for i := 0; i < days; i++ {
 			newStamp := model.Stamp{

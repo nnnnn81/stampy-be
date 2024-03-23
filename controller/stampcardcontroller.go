@@ -246,17 +246,18 @@ func CardCreate(c echo.Context) error {
 		}
 	} else {
 		// create card, return 201
-		startDate, _ := time.Parse("2006-01-02 00:00:00", obj.StartDate)
-		endDate, _ := time.Parse("2006-01-02 00:00:00", obj.EndDate)
+		startDate, _ := time.Parse(time.RFC3339, obj.StartDate)
+		endDate, _ := time.Parse(time.RFC3339, obj.EndDate)
 		days := int(endDate.Sub(startDate).Hours() / 24)
+
 		new := model.Stampcard{
 			Title:         obj.Title,
 			CreatedBy:     userid,
 			JoinedUser:    joineduser.Id,
 			StartDate:     obj.StartDate,
 			EndDate:       obj.EndDate,
-			Days:          days,
-			CurrentDay:    obj.CurrentDay,
+			Days:          days + 1,
+			CurrentDay:    1,
 			IsStampy:      obj.IsStampy,
 			IsCompleted:   obj.IsCompleted,
 			IsDeleted:     obj.IsDeleted,

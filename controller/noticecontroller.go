@@ -84,6 +84,8 @@ func NoticesShow(c echo.Context) error {
 				"title":      notice.Title,
 				"stamp":      notice.Stamp,
 				"content":    notice.Content,
+				"currentDay": notice.CurrentDay,
+				"isLastDay":  notice.IsLastDay,
 				"hrefPrefix": notice.HrefPrefix,
 				"sender":     omitedsender,
 				"receiver":   omitedreceiver,
@@ -166,6 +168,8 @@ func NoticeShow(c echo.Context) error {
 			"title":      notice.Title,
 			"stamp":      notice.Stamp,
 			"content":    notice.Content,
+			"currentDay": notice.CurrentDay,
+			"isLastDay":  notice.IsLastDay,
 			"hrefPrefix": notice.HrefPrefix,
 			"sender":     omitedsender,
 			"receiver":   omitedreceiver,
@@ -568,7 +572,7 @@ func LetterCreate(c echo.Context) error {
 		}
 		db.DB.Create(&newNotice)
 		return c.JSON(http.StatusCreated, echo.Map{
-			"notice": newLetter,
+			"letter": newLetter,
 		})
 	}
 }

@@ -11,10 +11,11 @@ type Stampcard struct {
 	UpdatedAt     time.Time `json:"updatedAt"`
 	StartDate     string    `json:"startDate"`
 	EndDate       string    `json:"endDate"`
-	CurrentDay    int       `json:"CurrentDay"`
-	IsStampy      bool      `json:"isStampy"`
-	IsCompleted   bool      `json:"IsCompleted"`
-	IsDeleted     bool      `json:"IsDeleted"`
-	StampNodes    []Stamp   `gorm:"foreignKey:CardId" json:"stampNodes"`
-	BackgroundUrl string    `json:"BackgroundUrl"`
+	Days          int
+	CurrentDay    int     `json:"CurrentDay"`
+	IsStampy      bool    `json:"isStampy"`
+	IsCompleted   bool    `json:"IsCompleted"`
+	IsDeleted     bool    `json:"IsDeleted"`
+	StampNodes    []Stamp `gorm:"foreignKey:CardId" json:"stampNodes"`
+	BackgroundUrl string  `json:"BackgroundUrl"`
 }

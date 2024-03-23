@@ -1,15 +1,7 @@
 FROM golang:1.22-alpine
 WORKDIR /app
 
-RUN go install github.com/cosmtrek/air@latest
-CMD ["air"]
+COPY go.mod go.sum ./
+RUN go mod download && go mod verify
 
-# FROM golang:1.21.4-alpine
-# WORKDIR /app
-
-# COPY . .
-# RUN CGO_ENABLED=0 GOOS=linux go build -o binary
-
-# EXPOSE 8080
-
-# CMD ["./binary"]
+CMD ["go", "run", "main.go"] 

@@ -3,6 +3,7 @@ package controller
 import (
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
@@ -217,7 +218,6 @@ func CardCreate(c echo.Context) error {
 	claims := user.Claims.(jwt.MapClaims)
 	useridFloat := claims["id"].(float64)
 	userid := uint(useridFloat)
-	log.Print(userid)
 
 	obj := new(Body)
 	if err := c.Bind(obj); err != nil {
@@ -226,8 +226,12 @@ func CardCreate(c echo.Context) error {
 			"message": "Json Format Error: " + err.Error(),
 		})
 	}
+	joineduserEmail := obj.JoinedUser
+	if obj.IsStampy {
+		joineduserEmail = "stampy@gmail.com"
+	}
 	var joineduser model.User
-	if err := db.DB.Where("email = ?", obj.JoinedUser).First(&joineduser).Error; err != nil {
+	if err := db.DB.Where("email = ?", joineduserEmail).First(&joineduser).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			// return 404
 			return c.JSON(http.StatusNotFound, echo.Map{
@@ -241,13 +245,17 @@ func CardCreate(c echo.Context) error {
 			})
 		}
 	} else {
-		// create todo, return 201
+		// create card, return 201
+		startDate, _ := time.Parse("2006-01-02 00:00:00", obj.StartDate)
+		endDate, _ := time.Parse("2006-01-02 00:00:00", obj.EndDate)
+		days := int(endDate.Sub(startDate).Hours() / 24)
 		new := model.Stampcard{
 			Title:         obj.Title,
 			CreatedBy:     userid,
 			JoinedUser:    joineduser.Id,
 			StartDate:     obj.StartDate,
 			EndDate:       obj.EndDate,
+			Days:          days,
 			CurrentDay:    obj.CurrentDay,
 			IsStampy:      obj.IsStampy,
 			IsCompleted:   obj.IsCompleted,
@@ -255,6 +263,17 @@ func CardCreate(c echo.Context) error {
 			BackgroundUrl: obj.BackgroundUrl,
 		}
 		db.DB.Create(&new)
+
+		for i := 0; i < days; i++ {
+			newStamp := model.Stamp{
+				StampImg:  "",
+				Message:   "",
+				Nthday:    i + 1,
+				StampedBy: new.JoinedUser,
+				CardId:    new.Id,
+			}
+			db.DB.Create(&newStamp)
+		}
 
 		return c.JSON(http.StatusCreated, echo.Map{
 			"id": new.Id,
@@ -317,7 +336,7 @@ func CardUpdate(c echo.Context) error {
 func StampCreate(c echo.Context) error {
 	type Body struct {
 		StampImg string `json:"stamp"`
-		Message  string `json:"title"`
+		Message  string `json:"message"`
 		Nthday   int    `json:"nthday"`
 		CardId   uint   `json:"cardId"`
 	}
@@ -353,12 +372,12 @@ func StampCreate(c echo.Context) error {
 				"message": "you're not joined this card",
 			})
 		}
-		var receiver model.User
-		if err := db.DB.Where("id = ?", card.CreatedBy).First(&receiver).Error; err != nil {
+		var stamp model.Stamp
+		if err := db.DB.Where("nthday = ? and card_id = ?", obj.Nthday, obj.CardId).First(&stamp).Error; err != nil {
 			if err == gorm.ErrRecordNotFound {
 				// return 404
 				return c.JSON(http.StatusNotFound, echo.Map{
-					"message": "User Not Found",
+					"message": "stamp Not Found",
 				})
 
 			} else {
@@ -367,37 +386,52 @@ func StampCreate(c echo.Context) error {
 					"message": "Database Error: " + err.Error(),
 				})
 			}
-		}
-		new := model.Stamp{
-			StampImg:  obj.StampImg,
-			Message:   obj.Message,
-			Nthday:    obj.Nthday,
-			StampedBy: userid,
-			CardId:    obj.CardId,
-		}
-		db.DB.Create(&new)
-		newnotice := model.Notice{
-			Type:       "notification",
-			Title:      "スタンプが届いています",
-			Stamp:      obj.StampImg,
-			Content:    obj.Message,
-			HrefPrefix: "hrefPrefix",
-			Sender:     userid,
-			Receiver:   receiver.Id,
-			ListType:   "receiver-dialog",
-		}
-		db.DB.Create(&newnotice)
+		} else {
+			var receiver model.User
+			if err := db.DB.Where("id = ?", card.CreatedBy).First(&receiver).Error; err != nil {
+				if err == gorm.ErrRecordNotFound {
+					// return 404
+					return c.JSON(http.StatusNotFound, echo.Map{
+						"message": "User Not Found",
+					})
 
-		return c.JSON(http.StatusCreated, echo.Map{
-			"id":        new.Id,
-			"stamp":     new.StampImg,
-			"message":   new.Message,
-			"nthday":    new.Nthday,
-			"stampedBy": new.StampedBy,
-			"cardId":    new.CardId,
-			"createdAt": new.CreatedAt,
-			"notice":    newnotice,
-		})
+				} else {
+					// return 500
+					return c.JSON(http.StatusInternalServerError, echo.Map{
+						"message": "Database Error: " + err.Error(),
+					})
+				}
+			}
+
+			stamp.StampImg = obj.StampImg
+			stamp.Message = obj.Message
+			stamp.Nthday = obj.Nthday
+			stamp.StampedBy = userid
+			stamp.CardId = obj.CardId
+			db.DB.Save(&stamp)
+			newnotice := model.Notice{
+				Type:       "notification",
+				Title:      "スタンプが届いています",
+				Stamp:      obj.StampImg,
+				Content:    obj.Message,
+				HrefPrefix: "hrefPrefix",
+				Sender:     userid,
+				Receiver:   receiver.Id,
+				ListType:   "receiver-dialog",
+			}
+			db.DB.Create(&newnotice)
+
+			return c.JSON(http.StatusCreated, echo.Map{
+				"id":        stamp.Id,
+				"stamp":     stamp.StampImg,
+				"message":   stamp.Message,
+				"nthday":    stamp.Nthday,
+				"stampedBy": stamp.StampedBy,
+				"cardId":    stamp.CardId,
+				"createdAt": stamp.CreatedAt,
+			})
+
+		}
 
 	}
 }

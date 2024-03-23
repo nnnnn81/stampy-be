@@ -265,7 +265,7 @@ func CardCreate(c echo.Context) error {
 		}
 		db.DB.Create(&new)
 
-		for i := 0; i < days; i++ {
+		for i := 0; i < days+1; i++ {
 			newStamp := model.Stamp{
 				StampImg:  "",
 				Message:   "",
@@ -415,6 +415,7 @@ func StampCreate(c echo.Context) error {
 				Title:      "スタンプが届いています",
 				Stamp:      obj.StampImg,
 				Content:    obj.Message,
+				CurrentDay: obj.Nthday,
 				HrefPrefix: "hrefPrefix",
 				Sender:     userid,
 				Receiver:   receiver.Id,

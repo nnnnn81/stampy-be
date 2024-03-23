@@ -8,6 +8,8 @@ type Notice struct {
 	Title      string
 	Stamp      string
 	Content    string
+	CurrentDay int
+	IsLastDay  bool
 	HrefPrefix string
 	Sender     uint
 	Receiver   uint

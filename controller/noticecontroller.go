@@ -89,7 +89,7 @@ func NoticesShow(c echo.Context) error {
 				"receiver":   omitedreceiver,
 				"read":       notice.Read,
 				"createdAt":  notice.CreatedAt,
-				"listtype":   notice.ListType,
+				"listType":   notice.ListType,
 			})
 		}
 
@@ -171,7 +171,7 @@ func NoticeShow(c echo.Context) error {
 			"receiver":   omitedreceiver,
 			"read":       notice.Read,
 			"createdAt":  notice.CreatedAt,
-			"listtype":   notice.ListType,
+			"listType":   notice.ListType,
 		}
 
 		return c.JSON(http.StatusOK, echo.Map{
@@ -258,7 +258,7 @@ func LettersShow(c echo.Context) error {
 				"receiver":   omitedreceiver,
 				"read":       notice.Read,
 				"createdAt":  notice.CreatedAt,
-				"listtype":   notice.ListType,
+				"listType":   notice.ListType,
 			})
 		}
 
@@ -345,7 +345,7 @@ func LetterShow(c echo.Context) error {
 			"receiver":   omitedreceiver,
 			"read":       notice.Read,
 			"createdAt":  notice.CreatedAt,
-			"listtype":   notice.ListType,
+			"listType":   notice.ListType,
 			"cardid":     notice.CardId,
 		}
 
@@ -417,6 +417,7 @@ func NoticeCreate(c echo.Context) error {
 						Title:      "スタンプが届いています",
 						Stamp:      stamp.StampImg,
 						Content:    stamp.Message,
+						CurrentDay: stamp.Nthday,
 						HrefPrefix: "HrefPrefix",
 						Sender:     card.JoinedUser,
 						Receiver:   card.CreatedBy,
@@ -433,6 +434,7 @@ func NoticeCreate(c echo.Context) error {
 						Type:       "notification",
 						Title:      "スタンプを要求されています",
 						HrefPrefix: "HrefPrefix",
+						CurrentDay: stamp.Nthday,
 						Sender:     card.CreatedBy,
 						Receiver:   card.JoinedUser,
 						ListType:   "sender-dialog",
@@ -454,6 +456,8 @@ func NoticeCreate(c echo.Context) error {
 						Title:      card.Title + "の完走レター",
 						Stamp:      "🌟",
 						Content:    "完走してえらい！",
+						CurrentDay: card.CurrentDay,
+						IsLastDay:  true,
 						HrefPrefix: "/letter",
 						Sender:     card.JoinedUser,
 						Receiver:   card.CreatedBy,
@@ -466,6 +470,8 @@ func NoticeCreate(c echo.Context) error {
 						Title:      card.Title + "の完走レターが届いています",
 						Stamp:      "🌟",
 						Content:    "完走してえらい！",
+						CurrentDay: card.CurrentDay,
+						IsLastDay:  true,
 						HrefPrefix: "HrefPrefix",
 						Sender:     card.JoinedUser,
 						Receiver:   card.CreatedBy,
@@ -481,6 +487,8 @@ func NoticeCreate(c echo.Context) error {
 						Type:       "notification",
 						Title:      "レターを要求されています",
 						HrefPrefix: "HrefPrefix",
+						CurrentDay: stamp.Nthday,
+						IsLastDay:  true,
 						Sender:     card.CreatedBy,
 						Receiver:   card.JoinedUser,
 						ListType:   "sender-dialog",
@@ -551,6 +559,8 @@ func LetterCreate(c echo.Context) error {
 			Title:      card.Title + "への完走レターが届いています",
 			Stamp:      obj.Stamp,
 			Content:    obj.Content,
+			CurrentDay: card.CurrentDay,
+			IsLastDay:  true,
 			HrefPrefix: "HrefPrefix",
 			Sender:     userid,
 			Receiver:   card.CreatedBy,

@@ -11,11 +11,13 @@ import (
 func Migrate() {
 
 	DB.Exec("DROP TABLE IF EXISTS notices")
+	DB.Exec("DROP TABLE IF EXISTS letters")
 	DB.Exec("DROP TABLE IF EXISTS stamps")
 	DB.Exec("DROP TABLE IF EXISTS users")
 	DB.Exec("DROP TABLE IF EXISTS stampcards")
 
 	DB.AutoMigrate(&model.Notice{})
+	DB.AutoMigrate(&model.Letter{})
 	DB.AutoMigrate(&model.Stamp{})
 	DB.AutoMigrate(&model.User{})
 	DB.AutoMigrate(&model.Stampcard{})

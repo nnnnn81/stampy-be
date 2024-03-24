@@ -98,6 +98,7 @@ func CardsShow(c echo.Context) error {
 				"currentDay":    card.CurrentDay,
 				"isCompleted":   card.IsCompleted,
 				"isDeleted":     card.IsDeleted,
+				"letterId":      card.LetterId,
 				"stampNodes":    stampNodes,
 				"backgroundUrl": card.BackgroundUrl,
 			})
@@ -193,6 +194,7 @@ func CardShow(c echo.Context) error {
 			"currentDay":    card.CurrentDay,
 			"isCompleted":   card.IsCompleted,
 			"isDeleted":     card.IsDeleted,
+			"letterId":      card.LetterId,
 			"stampNodes":    stampNodes,
 			"backgroundUrl": card.BackgroundUrl,
 		}
@@ -246,17 +248,18 @@ func CardCreate(c echo.Context) error {
 		}
 	} else {
 		// create card, return 201
-		startDate, _ := time.Parse("2006-01-02 00:00:00", obj.StartDate)
-		endDate, _ := time.Parse("2006-01-02 00:00:00", obj.EndDate)
+		startDate, _ := time.Parse(time.RFC3339, obj.StartDate)
+		endDate, _ := time.Parse(time.RFC3339, obj.EndDate)
 		days := int(endDate.Sub(startDate).Hours() / 24)
+
 		new := model.Stampcard{
 			Title:         obj.Title,
 			CreatedBy:     userid,
 			JoinedUser:    joineduser.Id,
 			StartDate:     obj.StartDate,
 			EndDate:       obj.EndDate,
-			Days:          days,
-			CurrentDay:    obj.CurrentDay,
+			Days:          days + 1,
+			CurrentDay:    1,
 			IsStampy:      obj.IsStampy,
 			IsCompleted:   obj.IsCompleted,
 			IsDeleted:     obj.IsDeleted,
@@ -264,7 +267,7 @@ func CardCreate(c echo.Context) error {
 		}
 		db.DB.Create(&new)
 
-		for i := 0; i < days; i++ {
+		for i := 0; i < days+1; i++ {
 			newStamp := model.Stamp{
 				StampImg:  "",
 				Message:   "",
@@ -407,17 +410,20 @@ func StampCreate(c echo.Context) error {
 			stamp.Message = obj.Message
 			stamp.Nthday = obj.Nthday
 			stamp.StampedBy = userid
+			stamp.Stamped = true
 			stamp.CardId = obj.CardId
 			db.DB.Save(&stamp)
 			newnotice := model.Notice{
 				Type:       "notification",
 				Title:      "スタンプが届いています",
 				Stamp:      obj.StampImg,
-				Content:    obj.Message,
+				Message:    obj.Message,
+				CurrentDay: obj.Nthday,
 				HrefPrefix: "hrefPrefix",
 				Sender:     userid,
 				Receiver:   receiver.Id,
 				ListType:   "receiver-dialog",
+				CardId:     obj.CardId,
 			}
 			db.DB.Create(&newnotice)
 

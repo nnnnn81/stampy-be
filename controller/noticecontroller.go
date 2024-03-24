@@ -93,6 +93,7 @@ func NoticesShow(c echo.Context) error {
 				"createdAt":  notice.CreatedAt,
 				"listType":   notice.ListType,
 				"cardId":     notice.CardId,
+				"letterId":   notice.LetterId,
 			})
 		}
 
@@ -178,6 +179,7 @@ func NoticeShow(c echo.Context) error {
 			"createdAt":  notice.CreatedAt,
 			"listType":   notice.ListType,
 			"cardId":     notice.CardId,
+			"letterId":   notice.LetterId,
 		}
 
 		return c.JSON(http.StatusOK, echo.Map{

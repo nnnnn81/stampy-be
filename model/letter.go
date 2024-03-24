@@ -7,7 +7,7 @@ type Letter struct {
 	Type       string    `json:"type"`
 	Title      string    `json:"title"`
 	Stamp      string    `json:"stamp"`
-	Content    string    `json:"content"`
+	Message    string    `json:"message"`
 	HrefPrefix string    `json:"hrefPrefix"`
 	Sender     uint      `json:"sender"`
 	Receiver   uint      `json:"receiver"`

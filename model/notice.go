@@ -7,7 +7,7 @@ type Notice struct {
 	Type       string    `json:"type"`
 	Title      string    `json:"title"`
 	Stamp      string    `json:"stamp"`
-	Content    string    `json:"content"`
+	Message    string    `json:"message"`
 	CurrentDay int       `json:"currentDay"`
 	IsLastDay  bool      `json:"isLastDay"`
 	HrefPrefix string    `json:"hrefPrefix"`

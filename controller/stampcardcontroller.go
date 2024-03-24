@@ -417,7 +417,7 @@ func StampCreate(c echo.Context) error {
 				Type:       "notification",
 				Title:      "スタンプが届いています",
 				Stamp:      obj.StampImg,
-				Content:    obj.Message,
+				Message:    obj.Message,
 				CurrentDay: obj.Nthday,
 				HrefPrefix: "hrefPrefix",
 				Sender:     userid,

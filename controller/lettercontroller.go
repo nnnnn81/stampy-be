@@ -81,7 +81,7 @@ func LettersShow(c echo.Context) error {
 				"type":       letter.Type,
 				"title":      letter.Title,
 				"stamp":      letter.Stamp,
-				"content":    letter.Content,
+				"message":    letter.Message,
 				"hrefPrefix": letter.HrefPrefix,
 				"sender":     omitedsender,
 				"receiver":   omitedreceiver,
@@ -170,7 +170,7 @@ func LetterShow(c echo.Context) error {
 			"type":       letter.Type,
 			"title":      letter.Title,
 			"stamp":      letter.Stamp,
-			"content":    letter.Content,
+			"message":    letter.Message,
 			"hrefPrefix": letter.HrefPrefix,
 			"sender":     omitedsender,
 			"receiver":   omitedreceiver,
@@ -189,7 +189,7 @@ func LetterShow(c echo.Context) error {
 // レター＆通知作成
 func LetterCreate(c echo.Context) error {
 	type Body struct {
-		Content string
+		Message string
 		Stamp   string
 		CardId  uint
 	}
@@ -241,7 +241,7 @@ func LetterCreate(c echo.Context) error {
 				Type:       "letter",
 				Title:      card.Title + "への完走レター",
 				Stamp:      obj.Stamp,
-				Content:    obj.Content,
+				Message:    obj.Message,
 				HrefPrefix: "/letter",
 				Sender:     userid,
 				Receiver:   card.CreatedBy,
@@ -261,7 +261,7 @@ func LetterCreate(c echo.Context) error {
 			db.DB.Save(&card)
 
 			stamp.StampImg = obj.Stamp
-			stamp.Message = obj.Content
+			stamp.Message = obj.Message
 			stamp.Stamped = true
 
 			db.DB.Save(&stamp)
@@ -270,7 +270,7 @@ func LetterCreate(c echo.Context) error {
 				Type:       "notification",
 				Title:      card.Title + "への完走レターが届いています",
 				Stamp:      obj.Stamp,
-				Content:    obj.Content,
+				Message:    obj.Message,
 				CurrentDay: card.CurrentDay,
 				IsLastDay:  true,
 				HrefPrefix: "HrefPrefix",

@@ -408,6 +408,7 @@ func StampCreate(c echo.Context) error {
 			stamp.Message = obj.Message
 			stamp.Nthday = obj.Nthday
 			stamp.StampedBy = userid
+			stamp.Stamped = true
 			stamp.CardId = obj.CardId
 			db.DB.Save(&stamp)
 			newnotice := model.Notice{

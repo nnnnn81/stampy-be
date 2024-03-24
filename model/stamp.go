@@ -10,6 +10,7 @@ type Stamp struct {
 	Message   string    `json:"message"`
 	Nthday    int       `json:"nthday"`
 	StampedBy uint      `json:"stampedBy"`
+	Stamped   bool      `json:"stamped"`
 	CardId    uint      `json:"cardId"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`

@@ -423,6 +423,7 @@ func StampCreate(c echo.Context) error {
 				Sender:     userid,
 				Receiver:   receiver.Id,
 				ListType:   "receiver-dialog",
+				CardId:     obj.CardId,
 			}
 			db.DB.Create(&newnotice)
 

@@ -92,6 +92,7 @@ func NoticesShow(c echo.Context) error {
 				"read":       notice.Read,
 				"createdAt":  notice.CreatedAt,
 				"listType":   notice.ListType,
+				"cardId":     notice.CardId,
 			})
 		}
 
@@ -176,6 +177,7 @@ func NoticeShow(c echo.Context) error {
 			"read":       notice.Read,
 			"createdAt":  notice.CreatedAt,
 			"listType":   notice.ListType,
+			"cardId":     notice.CardId,
 		}
 
 		return c.JSON(http.StatusOK, echo.Map{
@@ -263,6 +265,7 @@ func LettersShow(c echo.Context) error {
 				"read":       notice.Read,
 				"createdAt":  notice.CreatedAt,
 				"listType":   notice.ListType,
+				"cardId":     notice.CardId,
 			})
 		}
 
@@ -579,6 +582,7 @@ func LetterCreate(c echo.Context) error {
 			Sender:     userid,
 			Receiver:   card.CreatedBy,
 			ListType:   "receiver-dialog",
+			CardId:     card.Id,
 		}
 		db.DB.Create(&newNotice)
 

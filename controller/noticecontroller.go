@@ -483,8 +483,16 @@ func NoticeCreate(c echo.Context) error {
 						CardId:     card.Id,
 					}
 					db.DB.Create(&newNotice)
-					card.IsCompleted = true
+					if card.IsCompleted {
+						card.IsCompleted = true
+						card.LetterId = new.Id
+					} else {
+						return c.JSON(http.StatusBadRequest, echo.Map{
+							"message": "this card is already finished",
+						})
+					}
 					db.DB.Save(&card)
+
 					return c.JSON(http.StatusCreated, echo.Map{
 						"notice": newNotice,
 					})
@@ -574,7 +582,14 @@ func LetterCreate(c echo.Context) error {
 		}
 		db.DB.Create(&newNotice)
 
-		card.IsCompleted = true
+		if card.IsCompleted {
+			card.IsCompleted = true
+			card.LetterId = newLetter.Id
+		} else {
+			return c.JSON(http.StatusBadRequest, echo.Map{
+				"message": "this card is already finished",
+			})
+		}
 		db.DB.Save(&card)
 		return c.JSON(http.StatusCreated, echo.Map{
 			"letter": newLetter,

@@ -17,5 +17,6 @@ type Stampcard struct {
 	IsCompleted   bool    `json:"IsCompleted"`
 	IsDeleted     bool    `json:"IsDeleted"`
 	StampNodes    []Stamp `gorm:"foreignKey:CardId" json:"stampNodes"`
+	LetterId      uint    `json:"letterId"`
 	BackgroundUrl string  `json:"BackgroundUrl"`
 }

@@ -98,6 +98,7 @@ func CardsShow(c echo.Context) error {
 				"currentDay":    card.CurrentDay,
 				"isCompleted":   card.IsCompleted,
 				"isDeleted":     card.IsDeleted,
+				"letterId":      card.LetterId,
 				"stampNodes":    stampNodes,
 				"backgroundUrl": card.BackgroundUrl,
 			})
@@ -193,6 +194,7 @@ func CardShow(c echo.Context) error {
 			"currentDay":    card.CurrentDay,
 			"isCompleted":   card.IsCompleted,
 			"isDeleted":     card.IsDeleted,
+			"letterId":      card.LetterId,
 			"stampNodes":    stampNodes,
 			"backgroundUrl": card.BackgroundUrl,
 		}

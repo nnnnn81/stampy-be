@@ -267,7 +267,7 @@ func LettersShow(c echo.Context) error {
 		}
 
 		return c.JSON(http.StatusOK, echo.Map{
-			"notice": responseData,
+			"letters": responseData,
 		})
 	}
 }
@@ -354,7 +354,7 @@ func LetterShow(c echo.Context) error {
 		}
 
 		return c.JSON(http.StatusOK, echo.Map{
-			"notice": responseData,
+			"letter": responseData,
 		})
 	}
 }
@@ -447,7 +447,7 @@ func NoticeCreate(c echo.Context) error {
 					db.DB.Create(&newNotice)
 
 					return c.JSON(http.StatusCreated, echo.Map{
-						"notice": newNotice,
+						"notices": newNotice,
 					})
 				}
 			} else {

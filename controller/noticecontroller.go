@@ -483,6 +483,8 @@ func NoticeCreate(c echo.Context) error {
 						CardId:     card.Id,
 					}
 					db.DB.Create(&newNotice)
+					card.IsCompleted = true
+					db.DB.Save(&card)
 					return c.JSON(http.StatusCreated, echo.Map{
 						"notice": newNotice,
 					})
@@ -571,6 +573,9 @@ func LetterCreate(c echo.Context) error {
 			ListType:   "receiver-dialog",
 		}
 		db.DB.Create(&newNotice)
+
+		card.IsCompleted = true
+		db.DB.Save(&card)
 		return c.JSON(http.StatusCreated, echo.Map{
 			"letter": newLetter,
 		})

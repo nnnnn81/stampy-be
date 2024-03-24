@@ -283,11 +283,6 @@ func NoticeCreate(c echo.Context) error {
 				if card.IsStampy {
 					// stampyの時、すぐにレターと受け取り通知作成
 					// 一旦固定メッセージ
-					stamp.StampImg = "🌟"
-					stamp.Message = "完走！"
-					stamp.Stamped = true
-
-					db.DB.Save(&stamp)
 
 					new := model.Letter{
 						Type:       "letter",
@@ -301,6 +296,22 @@ func NoticeCreate(c echo.Context) error {
 						CardId:     card.Id,
 					}
 					db.DB.Create(&new)
+
+					if !card.IsCompleted {
+						card.IsCompleted = true
+						card.LetterId = new.Id
+					} else {
+						return c.JSON(http.StatusBadRequest, echo.Map{
+							"message": "this card is already finished",
+						})
+					}
+					db.DB.Save(&card)
+
+					stamp.StampImg = "🌟"
+					stamp.Message = "完走！"
+					stamp.Stamped = true
+
+					db.DB.Save(&stamp)
 					newNotice := model.Notice{
 						Type:       "notification",
 						Title:      card.Title + "の完走レターが届いています",
@@ -313,17 +324,9 @@ func NoticeCreate(c echo.Context) error {
 						Receiver:   card.CreatedBy,
 						ListType:   "receiver-dialog",
 						CardId:     card.Id,
+						LetterId:   card.LetterId,
 					}
 					db.DB.Create(&newNotice)
-					if !card.IsCompleted {
-						card.IsCompleted = true
-						card.LetterId = new.Id
-					} else {
-						return c.JSON(http.StatusBadRequest, echo.Map{
-							"message": "this card is already finished",
-						})
-					}
-					db.DB.Save(&card)
 
 					return c.JSON(http.StatusCreated, echo.Map{
 						"notice": newNotice,

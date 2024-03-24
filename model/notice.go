@@ -17,4 +17,5 @@ type Notice struct {
 	CreatedAt  time.Time `json:"createdAt"`
 	ListType   string    `json:"listType"`
 	CardId     uint      `json:"cardId"`
+	LetterId   uint      `json:"letterId"`
 }

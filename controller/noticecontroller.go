@@ -315,7 +315,7 @@ func NoticeCreate(c echo.Context) error {
 						CardId:     card.Id,
 					}
 					db.DB.Create(&newNotice)
-					if card.IsCompleted {
+					if !card.IsCompleted {
 						card.IsCompleted = true
 						card.LetterId = new.Id
 					} else {

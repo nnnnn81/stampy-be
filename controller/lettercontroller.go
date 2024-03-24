@@ -271,7 +271,7 @@ func LetterCreate(c echo.Context) error {
 			}
 			db.DB.Create(&newNotice)
 
-			if card.IsCompleted {
+			if !card.IsCompleted {
 				card.IsCompleted = true
 				card.LetterId = newLetter.Id
 			} else {

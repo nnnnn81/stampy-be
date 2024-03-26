@@ -443,3 +443,29 @@ func StampCreate(c echo.Context) error {
 
 	}
 }
+
+func CardDelete(c echo.Context) error {
+	cardid := c.Param("id")
+
+	var card model.Stampcard
+	if err := db.DB.Where("id = ?", cardid).First(&card).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			// return 404
+			return c.JSON(http.StatusNotFound, echo.Map{
+				"message": "Card Not Found",
+			})
+
+		} else {
+			// return 500
+			return c.JSON(http.StatusInternalServerError, echo.Map{
+				"message": "Database Error: " + err.Error(),
+			})
+		}
+	} else {
+		card.IsDeleted = true
+		db.DB.Save(&card)
+		return c.JSON(http.StatusNoContent, echo.Map{
+			"message": "deleted",
+		})
+	}
+}

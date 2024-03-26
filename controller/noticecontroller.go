@@ -84,7 +84,7 @@ func NoticesShow(c echo.Context) error {
 				"title":      notice.Title,
 				"stamp":      notice.Stamp,
 				"message":    notice.Message,
-				"currentDay": notice.CurrentDay,
+				"nthDay":     notice.NthDay,
 				"isLastDay":  notice.IsLastDay,
 				"hrefPrefix": notice.HrefPrefix,
 				"sender":     omitedsender,
@@ -170,7 +170,7 @@ func NoticeShow(c echo.Context) error {
 			"title":      notice.Title,
 			"stamp":      notice.Stamp,
 			"message":    notice.Message,
-			"currentDay": notice.CurrentDay,
+			"nthDay":     notice.NthDay,
 			"isLastDay":  notice.IsLastDay,
 			"hrefPrefix": notice.HrefPrefix,
 			"sender":     omitedsender,
@@ -237,7 +237,7 @@ func NoticeCreate(c echo.Context) error {
 				})
 			}
 		} else {
-			if stamp.Nthday != card.Days {
+			if stamp.NthDay != card.Days {
 				if card.IsStampy {
 					// stampyの時、すぐにスタンプと受け取り通知作成
 					// 一旦固定メッセージ
@@ -252,7 +252,7 @@ func NoticeCreate(c echo.Context) error {
 						Title:      "スタンプが届いています",
 						Stamp:      stamp.StampImg,
 						Message:    stamp.Message,
-						CurrentDay: stamp.Nthday,
+						NthDay:     stamp.NthDay,
 						HrefPrefix: "HrefPrefix",
 						Sender:     card.JoinedUser,
 						Receiver:   card.CreatedBy,
@@ -269,7 +269,7 @@ func NoticeCreate(c echo.Context) error {
 						Type:       "notification",
 						Title:      "スタンプを要求されています",
 						HrefPrefix: "HrefPrefix",
-						CurrentDay: stamp.Nthday,
+						NthDay:     stamp.NthDay,
 						Sender:     card.CreatedBy,
 						Receiver:   card.JoinedUser,
 						ListType:   "sender-dialog",
@@ -319,7 +319,7 @@ func NoticeCreate(c echo.Context) error {
 						Title:      card.Title + "の完走レターが届いています",
 						Stamp:      "🌟",
 						Message:    "完走してえらい！",
-						CurrentDay: card.CurrentDay,
+						NthDay:     stamp.NthDay,
 						IsLastDay:  true,
 						HrefPrefix: "HrefPrefix",
 						Sender:     card.JoinedUser,
@@ -338,7 +338,7 @@ func NoticeCreate(c echo.Context) error {
 						Type:       "notification",
 						Title:      "レターを要求されています",
 						HrefPrefix: "HrefPrefix",
-						CurrentDay: stamp.Nthday,
+						NthDay:     stamp.NthDay,
 						IsLastDay:  true,
 						Sender:     card.CreatedBy,
 						Receiver:   card.JoinedUser,

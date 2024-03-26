@@ -271,7 +271,7 @@ func LetterCreate(c echo.Context) error {
 				Title:      card.Title + "への完走レターが届いています",
 				Stamp:      obj.Stamp,
 				Message:    obj.Message,
-				CurrentDay: card.CurrentDay,
+				NthDay:     stamp.NthDay,
 				IsLastDay:  true,
 				HrefPrefix: "HrefPrefix",
 				Sender:     userid,

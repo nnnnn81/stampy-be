@@ -8,7 +8,7 @@ type Stamp struct {
 	Id        uint      `gorm:"primary_key" json:"id"`
 	StampImg  string    `json:"stamp"`
 	Message   string    `json:"message"`
-	Nthday    int       `json:"nthday"`
+	NthDay    int       `json:"nthday"`
 	StampedBy uint      `json:"stampedBy"`
 	Stamped   bool      `json:"stamped"`
 	CardId    uint      `json:"cardId"`

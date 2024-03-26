@@ -191,7 +191,8 @@ func CardShow(c echo.Context) error {
 			"joinedUser":    omitedjoineduser,
 			"createdAt":     card.CreatedAt,
 			"updatedAt":     card.UpdatedAt,
-			"currentDay":    card.CurrentDay,
+			"startDate":     card.StartDate,
+			"endDate":       card.EndDate,
 			"isCompleted":   card.IsCompleted,
 			"isDeleted":     card.IsDeleted,
 			"letterId":      card.LetterId,
@@ -271,7 +272,7 @@ func CardCreate(c echo.Context) error {
 			newStamp := model.Stamp{
 				StampImg:  "",
 				Message:   "",
-				Nthday:    i + 1,
+				NthDay:    i + 1,
 				StampedBy: new.JoinedUser,
 				CardId:    new.Id,
 			}
@@ -340,7 +341,7 @@ func StampCreate(c echo.Context) error {
 	type Body struct {
 		StampImg string `json:"stamp"`
 		Message  string `json:"message"`
-		Nthday   int    `json:"nthday"`
+		NthDay   int    `json:"nthday"`
 		CardId   uint   `json:"cardId"`
 	}
 
@@ -376,7 +377,7 @@ func StampCreate(c echo.Context) error {
 			})
 		}
 		var stamp model.Stamp
-		if err := db.DB.Where("nthday = ? and card_id = ?", obj.Nthday, obj.CardId).First(&stamp).Error; err != nil {
+		if err := db.DB.Where("nthday = ? and card_id = ?", obj.NthDay, obj.CardId).First(&stamp).Error; err != nil {
 			if err == gorm.ErrRecordNotFound {
 				// return 404
 				return c.JSON(http.StatusNotFound, echo.Map{
@@ -408,7 +409,7 @@ func StampCreate(c echo.Context) error {
 
 			stamp.StampImg = obj.StampImg
 			stamp.Message = obj.Message
-			stamp.Nthday = obj.Nthday
+			stamp.NthDay = obj.NthDay
 			stamp.StampedBy = userid
 			stamp.Stamped = true
 			stamp.CardId = obj.CardId
@@ -416,9 +417,9 @@ func StampCreate(c echo.Context) error {
 			newnotice := model.Notice{
 				Type:       "notification",
 				Title:      "スタンプが届いています",
-				Stamp:      obj.StampImg,
-				Message:    obj.Message,
-				CurrentDay: obj.Nthday,
+				Stamp:      stamp.StampImg,
+				Message:    stamp.Message,
+				NthDay:     stamp.NthDay,
 				HrefPrefix: "hrefPrefix",
 				Sender:     userid,
 				Receiver:   receiver.Id,
@@ -431,7 +432,7 @@ func StampCreate(c echo.Context) error {
 				"id":        stamp.Id,
 				"stamp":     stamp.StampImg,
 				"message":   stamp.Message,
-				"nthday":    stamp.Nthday,
+				"nthday":    stamp.NthDay,
 				"stampedBy": stamp.StampedBy,
 				"cardId":    stamp.CardId,
 				"createdAt": stamp.CreatedAt,

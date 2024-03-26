@@ -1,7 +1,9 @@
 package controller
 
 import (
+	"math/rand"
 	"net/http"
+	"time"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
@@ -9,6 +11,17 @@ import (
 	"github.com/nnnnn81/stampy-be/model"
 	"gorm.io/gorm"
 )
+
+func pickRandom(messages []string) string {
+	// ランダムなシードを初期化
+	rand.Seed(time.Now().UnixNano())
+	// スライスの長さを取得
+	n := len(messages)
+	// ランダムなインデックスを生成
+	randomIndex := rand.Intn(n)
+	// ランダムに選択されたメッセージを返す
+	return messages[randomIndex]
+}
 
 // お知らせ一覧取得(notice)
 
@@ -191,6 +204,36 @@ func NoticeShow(c echo.Context) error {
 // 通知作成(要求系)
 
 func NoticeCreate(c echo.Context) error {
+
+	randMessages := []string{
+		"えらい！",
+		"すごい！",
+		"天才！",
+		"その調子！",
+		"継続は力なり💪",
+		"ちゃんと見てるよ👀",
+	}
+	randStamps := []string{
+		"🌟",
+		"😍",
+		"😆",
+		"🤩",
+		"🥳",
+		"💝",
+		"👼",
+		"🎉",
+		"🎊",
+		"🍻",
+		"🙌",
+		"🫶",
+	}
+	randCompMessage := []string{
+		"完走してえらい！とてもえらい！！",
+		"最後までよくがんばりました💮",
+		"お疲れさま🍵お茶でも飲んでゆっくりしない？",
+		"完走おめでとう！頑張るあなたは美しい✨",
+	}
+
 	type Body struct {
 		StampId uint `json:"StampId"`
 	}
@@ -240,9 +283,8 @@ func NoticeCreate(c echo.Context) error {
 			if stamp.NthDay != card.Days {
 				if card.IsStampy {
 					// stampyの時、すぐにスタンプと受け取り通知作成
-					// 一旦固定メッセージ
-					stamp.StampImg = "🌟"
-					stamp.Message = "えらい！"
+					stamp.StampImg = pickRandom(randStamps)
+					stamp.Message = pickRandom(randMessages)
 					stamp.Stamped = true
 
 					db.DB.Save(&stamp)
@@ -284,13 +326,14 @@ func NoticeCreate(c echo.Context) error {
 			} else {
 				if card.IsStampy {
 					// stampyの時、すぐにレターと受け取り通知作成
-					// 一旦固定メッセージ
+					completeStamp := pickRandom(randStamps)
+					completeMessage := pickRandom(randCompMessage)
 
 					new := model.Letter{
 						Type:       "letter",
 						Title:      card.Title + "の完走レター",
-						Stamp:      "🌟",
-						Message:    "完走してえらい！",
+						Stamp:      completeStamp,
+						Message:    completeMessage,
 						HrefPrefix: "/letter",
 						Sender:     card.JoinedUser,
 						Receiver:   card.CreatedBy,
@@ -309,16 +352,16 @@ func NoticeCreate(c echo.Context) error {
 					}
 					db.DB.Save(&card)
 
-					stamp.StampImg = "🌟"
-					stamp.Message = "完走！"
+					stamp.StampImg = completeStamp
+					stamp.Message = completeMessage
 					stamp.Stamped = true
 
 					db.DB.Save(&stamp)
 					newNotice := model.Notice{
 						Type:       "notification",
 						Title:      card.Title + "の完走レターが届いています",
-						Stamp:      "🌟",
-						Message:    "完走してえらい！",
+						Stamp:      completeStamp,
+						Message:    completeMessage,
 						NthDay:     stamp.NthDay,
 						IsLastDay:  true,
 						HrefPrefix: "HrefPrefix",

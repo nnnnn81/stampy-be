@@ -622,11 +622,11 @@ req
 res
 ```
 {
-  receivedStamp: 1,
-  challengeCard: 1,
-  completedCard: 1,
-  receivedLetter: 1,
-  people: 1,
+  receivedStamp: 1, // isStampedがtrueであるstampのcount
+  challengeCard: 1, // createdUserがuserIdと一致するcardのcount
+  completedCard: 1, // ↑+isCompletedがtrueであるcardのcount
+  receivedLetter: 1, // ReceiverがuserIdと一致するletterのcount
+  people: 1, // できたらやる
 }
 
 ```

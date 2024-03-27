@@ -106,10 +106,11 @@ func LetterShow(c echo.Context) error {
 	claims := user.Claims.(jwt.MapClaims)
 	useridFloat := claims["id"].(float64)
 	userid := uint(useridFloat)
+	letterid := c.Param("id")
 
 	var letter model.Letter
 
-	if err := db.DB.Where("receiver = ? and type = ? ", userid, "letter").Find(&letter).Error; err != nil {
+	if err := db.DB.Where("receiver = ? and id = ? ", userid, letterid).Find(&letter).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return c.JSON(http.StatusOK, echo.Map{
 				"letter": []model.Letter{},

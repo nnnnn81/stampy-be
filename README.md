@@ -611,3 +611,22 @@ res
 ```
 なし
 ```
+
+### GET  /user/total
+ユーザーがこれまでに受け取ったスタンプ、チャレンジしたカード、完了したカード、受け取ったレター、stampyを通してつながった人の数を返す
+req
+```
+なし
+```
+
+res
+```
+{
+  receivedStamp: 1,
+  challengeCard: 1,
+  completedCard: 1,
+  receivedLetter: 1,
+  people: 1,
+}
+
+```

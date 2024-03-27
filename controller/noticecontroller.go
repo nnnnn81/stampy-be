@@ -285,6 +285,7 @@ func NoticeCreate(c echo.Context) error {
 					// stampyの時、すぐにスタンプと受け取り通知作成
 					stamp.StampImg = pickRandom(randStamps)
 					stamp.Message = pickRandom(randMessages)
+					stamp.StampedTo = userid
 					stamp.Stamped = true
 
 					db.DB.Save(&stamp)
@@ -354,6 +355,7 @@ func NoticeCreate(c echo.Context) error {
 
 					stamp.StampImg = completeStamp
 					stamp.Message = completeMessage
+					stamp.StampedTo = userid
 					stamp.Stamped = true
 
 					db.DB.Save(&stamp)

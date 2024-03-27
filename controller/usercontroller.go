@@ -298,3 +298,29 @@ func UserEmailCheck(c echo.Context) error {
 		})
 	}
 }
+
+func UserTotal(c echo.Context) error {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	useridFloat := claims["id"].(float64)
+	userid := uint(useridFloat)
+
+	var receivedStamp, challengeCard, completedCard, receivedLetter int64
+
+	db.DB.Model(&model.Stamp{}).Where("stamped_to = ? and stamped = ?", userid, true).Count(&receivedStamp)
+
+	db.DB.Model(&model.Stampcard{}).Where("created_by = ?", userid).Count(&challengeCard)
+
+	db.DB.Model(&model.Stampcard{}).Where("created_by = ? and is_completed = ?", userid, true).Count(&completedCard)
+
+	db.DB.Model(&model.Letter{}).Where("receiver = ?", userid).Count(&receivedLetter)
+
+	response := map[string]int64{
+		"receivedStamp":  receivedStamp,
+		"challengeCard":  challengeCard,
+		"completedCard":  completedCard,
+		"receivedLetter": receivedLetter,
+	}
+
+	return c.JSON(http.StatusOK, response)
+}

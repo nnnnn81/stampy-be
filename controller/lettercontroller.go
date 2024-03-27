@@ -223,7 +223,7 @@ func LetterCreate(c echo.Context) error {
 		}
 	} else {
 		var stamp model.Stamp
-		if err := db.DB.Where("card_id = ? and nthday = ?", obj.CardId, card.Days).First(&stamp).Error; err != nil {
+		if err := db.DB.Where("card_id = ? and nth_day = ?", obj.CardId, card.Days).First(&stamp).Error; err != nil {
 			if err == gorm.ErrRecordNotFound {
 				// return 404
 				return c.JSON(http.StatusNotFound, echo.Map{

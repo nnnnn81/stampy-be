@@ -404,7 +404,7 @@ func StampCreate(c echo.Context) error {
 			})
 		}
 		var stamp model.Stamp
-		if err := db.DB.Where("nthday = ? and card_id = ?", obj.NthDay, obj.CardId).First(&stamp).Error; err != nil {
+		if err := db.DB.Where("nth_day = ? and card_id = ?", obj.NthDay, obj.CardId).First(&stamp).Error; err != nil {
 			if err == gorm.ErrRecordNotFound {
 				// return 404
 				return c.JSON(http.StatusNotFound, echo.Map{

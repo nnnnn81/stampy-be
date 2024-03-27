@@ -55,6 +55,7 @@ func newRouter() *echo.Echo {
 	r.GET("/user", controller.UserShow)
 	r.PUT("/user", controller.UserUpdate)
 	r.PUT("/user/pwd", controller.UserPassUpdate)
+	r.GET("/user/total", controller.UserTotal)
 	r.GET("/stampcard", controller.CardsShow)
 	r.GET("/stampcard/:id", controller.CardShow)
 	r.POST("/stampcard", controller.CardCreate)

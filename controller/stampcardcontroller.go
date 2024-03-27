@@ -412,6 +412,7 @@ func StampCreate(c echo.Context) error {
 			stamp.Message = obj.Message
 			stamp.NthDay = obj.NthDay
 			stamp.StampedBy = userid
+			stamp.StampedTo = card.CreatedBy
 			stamp.Stamped = true
 			stamp.CardId = obj.CardId
 			db.DB.Save(&stamp)

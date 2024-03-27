@@ -444,7 +444,7 @@ func StampCreate(c echo.Context) error {
 			db.DB.Save(&stamp)
 			newnotice := model.Notice{
 				Type:       "notification",
-				Title:      "スタンプが届いています",
+				Title:      "スタンプが届いています！",
 				Stamp:      stamp.StampImg,
 				Message:    stamp.Message,
 				NthDay:     stamp.NthDay,

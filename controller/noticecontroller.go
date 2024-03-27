@@ -292,7 +292,7 @@ func NoticeCreate(c echo.Context) error {
 
 					newNotice := model.Notice{
 						Type:       "notification",
-						Title:      "スタンプが届いています",
+						Title:      "スタンプが届いています！",
 						Stamp:      stamp.StampImg,
 						Message:    stamp.Message,
 						NthDay:     stamp.NthDay,
@@ -310,7 +310,7 @@ func NoticeCreate(c echo.Context) error {
 				} else {
 					newNotice := model.Notice{
 						Type:       "notification",
-						Title:      "スタンプを要求されています",
+						Title:      "スタンプリクエストが来ています",
 						HrefPrefix: "HrefPrefix",
 						NthDay:     stamp.NthDay,
 						Sender:     card.CreatedBy,
@@ -381,7 +381,7 @@ func NoticeCreate(c echo.Context) error {
 				} else {
 					newNotice := model.Notice{
 						Type:       "notification",
-						Title:      "レターを要求されています",
+						Title:      "レターリクエストが来ています",
 						HrefPrefix: "HrefPrefix",
 						NthDay:     stamp.NthDay,
 						IsLastDay:  true,
